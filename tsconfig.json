@@ -1,9 +1,14 @@
 {
   "compilerOptions": {
+    "target": "ES2023",
+    "module": "ES2022",
+    "moduleResolution": "classic",
     "strict": true,
-    "resolveJsonModule": true,
     "rootDir": "./src",
-    "outDir": "./bin"
+    "outDir": "./bin",
+    "paths": {
+      "undici-types": ["./node_modules/undici-types/index.d.ts"]
+    }
   },
   "include": ["./src"]
 }
