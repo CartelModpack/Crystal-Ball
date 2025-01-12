@@ -2,7 +2,7 @@
   "name": "crystal-ball",
   "version": "0.1.0",
   "description": "N/A",
-  "main": "./bin/app/app.js",
+  "main": "./bin/app.js",
   "repository": "",
   "author": "gavinhsmith <me@gavinhsmith.com> (https://gavinhsmith.com)",
   "license": "GPL-3.0",
