@@ -1,0 +1,10 @@
+{
+  "name": "crystal-ball",
+  "version": "0.1.0",
+  "description": "N/A",
+  "main": "./bin/app.js",
+  "repository": "https://github.com/N/A",
+  "author": "gavinhsmith <me@gavinhsmith.com> (https://gavinhsmith.com)",
+  "license": "GPL-3.0",
+  "private": true
+}
