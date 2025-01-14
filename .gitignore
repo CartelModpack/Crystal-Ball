@@ -130,5 +130,9 @@ dist
 .pnp.*
 
 # Binaries
-bin/
-lib/
+/bin/
+/lib/
+/site/
+
+# Config
+/config.json

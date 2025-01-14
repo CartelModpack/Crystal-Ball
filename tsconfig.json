@@ -1,13 +1,22 @@
 {
   "compilerOptions": {
-    "target": "ES2023",
-    "module": "ES2022",
-    "moduleResolution": "classic",
     "strict": true,
+
     "rootDir": "./src",
     "outDir": "./bin",
+
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "allowJs": true,
+
+    "pretty": true,
+
+    "types": [],
     "paths": {
-      "undici-types": ["./node_modules/undici-types/index.d.ts"]
+      "undici-types": ["./node_modules/undici-types/index.d.ts"],
+      "commander": ["./node_modules/commander/typings/index.d.ts"]
     }
   },
   "include": ["./src"]

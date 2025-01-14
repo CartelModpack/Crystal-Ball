@@ -12,6 +12,16 @@ const sheriffOptions: SheriffSettings = {
 };
 
 export default [
-  { ignores: ["eslint.config.ts", "scripts/*"] },
+  {
+    ignores: [
+      "eslint.config.ts",
+      "scripts/*",
+      "site/*",
+      "docs/*",
+      "bin/*",
+      "lib/*",
+      "src/lib/*",
+    ],
+  },
   ...tseslint.config(sheriff(sheriffOptions)),
 ];
