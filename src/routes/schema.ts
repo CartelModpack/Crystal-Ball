@@ -1,7 +1,7 @@
 import { type Request, type Response, Router } from "express";
+import { run } from "../../lib/json_typegen_wasm/json_typegen_wasm.js";
 import packageFile from "../../package.json" with { type: "json" };
-import { defaultConfig } from "../config.js";
-import { run } from "../lib/json_typegen_wasm/json_typegen_wasm.js";
+import { defaultConfig } from "../modules/config.js";
 
 export const schemaRoute = Router();
 
@@ -16,7 +16,7 @@ const schemaGenerator = (
   try {
     const content = JSON.parse(
       run(
-        name as string,
+        name,
         JSON.stringify(defaultConfig),
         JSON.stringify({ output_mode: outputMode }),
       ),

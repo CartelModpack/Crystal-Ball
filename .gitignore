@@ -131,8 +131,9 @@ dist
 
 # Binaries
 /bin/
-/lib/
+/lib/packwiz/
 /site/
 
 # Config
 /config.json
+/data.db

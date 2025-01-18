@@ -1,10 +1,6 @@
 import { Router } from "express";
+import { apiV1Route } from "./api/v1/v1.js";
 
 export const apiRoutes = Router();
 
-apiRoutes.get("/", (req, res) => {
-  res.status(200);
-  res.header("Content-Type", "application/json");
-  res.send({});
-  res.end();
-});
+apiRoutes.use("/v1", apiV1Route);
