@@ -1,3 +1,4 @@
+import { readFile } from "node:fs";
 import { join } from "node:path";
 import { Router, static as staticFolder } from "express";
 import { config } from "../modules/config.js";
@@ -10,4 +11,12 @@ if (config.dev) {
   });
 } else {
   webRoutes.use(staticFolder(join(process.cwd(), "./site")));
+  webRoutes.use((req, res) => {
+    readFile(join(process.cwd(), "./site/404.html"), "utf-8", (error, data) => {
+      res.status(404);
+      res.header("Content-Type", "text/html");
+      res.send(data);
+      res.end();
+    });
+  });
 }
