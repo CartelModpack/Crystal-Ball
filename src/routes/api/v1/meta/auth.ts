@@ -6,8 +6,6 @@ import { db } from "../../../../modules/db.js";
 export const authApiV1Route = Router();
 
 authApiV1Route.post("/login", (req, res, next) => {
-  console.debug(req.body);
-
   db.table("auth")
     .all()
     .then((users) => {
