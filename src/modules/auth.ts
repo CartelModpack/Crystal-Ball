@@ -5,17 +5,17 @@ import { config } from "./config.js";
 // Users
 
 export interface User {
-  name: string;
-  id: number;
+  username: string;
+  key: string;
 }
 
 // JWT
 
-export const generateToken: (user: User) => string = (user) => {
-  return jwt.sign({ user }, config.jwt, { expiresIn: "7d" });
+export const generateToken: (username: string) => string = (username) => {
+  return jwt.sign({ user: username }, config.jwt, { expiresIn: "15m" });
 };
 
-export const enforceAuth: (
+export const enforceAuthToken: (
   req: Request,
   res: Response,
   next: NextFunction,

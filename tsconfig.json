@@ -14,7 +14,7 @@
 
     "pretty": true,
 
-    "types": ["./src/types/auth.d.ts"],
+    "types": ["./src/types/auth.d.ts", "./src/types/db.d.ts"],
     "paths": {
       "undici-types": ["./node_modules/undici-types/index.d.ts"],
       "commander": ["./node_modules/commander/typings/index.d.ts"]
