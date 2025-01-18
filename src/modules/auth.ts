@@ -15,7 +15,7 @@ export const generateToken: (user: User) => string = (user) => {
   return jwt.sign({ user }, config.jwt, { expiresIn: "7d" });
 };
 
-export const validateAuth: (
+export const enforceAuth: (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -27,16 +27,14 @@ export const validateAuth: (
 
   if (token === undefined) {
     next();
-
-    return;
+  } else {
+    jwt.verify(token, config.jwt, {}, (err, data) => {
+      if (err) {
+        next();
+      } else {
+        req.auth = data as { iat: number; exp: number };
+        next();
+      }
+    });
   }
-
-  jwt.verify(token, config.jwt, {}, (err, data) => {
-    if (err) {
-      next();
-    } else {
-      req.auth = data as { iat: number; exp: number };
-      next();
-    }
-  });
 };

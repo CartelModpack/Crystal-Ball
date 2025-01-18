@@ -4,7 +4,9 @@ declare namespace Express {
     /** User ID number, or null if unauthenticated. */
     auth: {
       [key: string]: unknown;
+      /** Time JWT was issued. */
       iat: number;
+      /** Time JWT will expire. */
       exp: number;
     } | null;
   }
