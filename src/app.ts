@@ -2,7 +2,7 @@
 
 import express from "express";
 import { config } from "./modules/config.js";
-import { apiRoutes } from "./routes/api.js";
+import { apiRoutes } from "./routes/api/api.js";
 import { schemaRoute } from "./routes/schema.js";
 import { webRoutes } from "./routes/web.js";
 
