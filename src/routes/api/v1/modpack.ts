@@ -44,14 +44,17 @@ modpacksApiV1Route.get("/list", (req, res, next) => {
 });
 
 modpacksApiV1Route.post("/new", (req, res, next) => {
-  console.debug(req.headers.authorization);
-  console.debug(req.body);
   if (req.auth === null) {
     next(new Error("403: No Access"));
   } else {
-    res.status(200);
-    res.header("Content-Type", "application/json");
-    res.send(JSON.stringify(req.body));
-    res.end();
+    db.table("modpacks")
+      .add(req.body as { [key: string]: string })
+      .then((modpack) => {
+        res.status(200);
+        res.header("Content-Type", "application/json");
+        res.send(JSON.stringify(modpack));
+        res.end();
+      })
+      .catch(next);
   }
 });
