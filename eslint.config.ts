@@ -23,5 +23,10 @@ export default [
       "src/lib/*",
     ],
   },
-  ...tseslint.config(sheriff(sheriffOptions)),
+  ...tseslint.config(sheriff(sheriffOptions), {
+    rules: {
+      "@typescript-eslint/consistent-type-definitions": ["error", "type"],
+      "jsdoc/require-description-complete-sentence": "off",
+    },
+  }),
 ];

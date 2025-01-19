@@ -1,17 +1,17 @@
 import { spawn } from "node:child_process";
 
 /** Stdio interfaces. */
-interface Stdio {
+type Stdio = {
   stdout: NodeJS.WriteStream;
   stderr: NodeJS.WriteStream;
   stdin: NodeJS.ReadStream;
-}
+};
 
 /** Execute config. */
-interface ExecuteConfig {
+type ExecuteConfig = {
   cwd: string;
   stdio: Partial<Stdio>;
-}
+};
 
 /**
  * Execute a command.

@@ -1,10 +1,11 @@
 import { Router } from "express";
 import semver from "semver";
-import { db } from "../../../modules/db.js";
+import { db } from "../../../../modules/db.js";
 
-export const modpacksApiV1Route = Router();
+export const apiModpacksV1Route = Router();
 
-interface Modpack {
+/** A modpack. */
+type Modpack = {
   slug: string;
   inherits: string;
   supportedVersions: string;
@@ -12,11 +13,17 @@ interface Modpack {
   resources: string;
   shaders: string;
   configs: string;
-}
+};
 
+/**
+ * Get modpacks using the correct promise.
+ *
+ * @param version - The version that we would be use.
+ * @returns The correct promise.
+ */
 const getModpacks: (version?: string) => Promise<Modpack[]> = (version) => {
   if (version !== undefined) {
-    return db.table("modpacks").get([], (modpack) => {
+    return db.table<Modpack>("modpacks").get([], (modpack) => {
       const vers = (modpack as Modpack).supportedVersions.split(",");
 
       for (const ver of vers) {
@@ -29,10 +36,15 @@ const getModpacks: (version?: string) => Promise<Modpack[]> = (version) => {
     }) as Promise<Modpack[]>;
   }
 
-  return db.table("modpacks").all() as unknown as Promise<Modpack[]>;
+  return db.table("modpacks").all() as Promise<Modpack[]>;
 };
 
-modpacksApiV1Route.get("/list", (req, res, next) => {
+/**
+ * GET   /v1/modpacks/list
+ *
+ * Lists all modpacks on the server.
+ */
+apiModpacksV1Route.get("/list", (req, res, next) => {
   getModpacks(req.query.version as string)
     .then((modpacks) => {
       res.status(200);
@@ -43,12 +55,17 @@ modpacksApiV1Route.get("/list", (req, res, next) => {
     .catch(next);
 });
 
-modpacksApiV1Route.post("/new", (req, res, next) => {
+/**
+ * POST  /v1/modpacks/new
+ *
+ * Adds a new modpack to the the server.
+ */
+apiModpacksV1Route.post("/new", (req, res, next) => {
   if (req.auth === null) {
     next(new Error("403: No Access"));
   } else {
-    db.table("modpacks")
-      .add(req.body as { [key: string]: string })
+    db.table<Modpack>("modpacks")
+      .add(req.body as Modpack)
       .then((modpack) => {
         res.status(200);
         res.header("Content-Type", "application/json");

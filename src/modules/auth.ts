@@ -4,15 +4,15 @@ import { config } from "./config.js";
 
 // Users
 
-export interface User {
+export type User = {
   username: string;
   key: string;
-}
+};
 
 // JWT
 
 export const generateToken: (username: string) => string = (username) => {
-  return jwt.sign({ user: username }, config.jwt, { expiresIn: "15m" });
+  return jwt.sign({ user: username }, config().jwt, { expiresIn: "15m" });
 };
 
 export const enforceAuthToken: (
@@ -28,7 +28,7 @@ export const enforceAuthToken: (
   if (token === undefined) {
     next();
   } else {
-    jwt.verify(token, config.jwt, {}, (err, data) => {
+    jwt.verify(token, config().jwt, {}, (err, data) => {
       if (err) {
         next();
       } else {

@@ -1,11 +1,14 @@
 import bcrypt from "bcrypt";
+import { runAtShutdown } from "@gavinhsmith/shutdown";
 import { Database } from "@gavinhsmith/simpledb";
 // eslint-disable-next-line no-restricted-imports
 import type { DataType } from "@gavinhsmith/simpledb/dist/module/lib/convert.js";
-import { config } from "./config.js";
+import type { User } from "./auth.js";
+import { config, ifConfigReloaded } from "./config.js";
 
 console.info("Loading database...");
 
+// Preloads
 const tables: { [key: string]: [{ [key: string]: DataType }, string] } = {
   modpacks: [
     {
@@ -28,43 +31,91 @@ const tables: { [key: string]: [{ [key: string]: DataType }, string] } = {
   ],
 };
 
-export const db = Database(config.database, { verbose: config.verbose });
+const loadDB = async () => {
+  const database = Database(config().database, { verbose: config().verbose });
 
-await new Promise<void>((resolve, reject) => {
-  const tablePromises: Promise<void>[] = [];
+  await new Promise<void>((resolve, reject) => {
+    const tablePromises: Promise<void>[] = [];
 
-  for (const table of Object.keys(tables)) {
-    tablePromises.push(
-      new Promise((resolve, reject) => {
-        db.has(table)
-          .then((exists) => {
-            if (exists) {
+    for (const table of Object.keys(tables)) {
+      tablePromises.push(
+        new Promise((resolve, reject) => {
+          database
+            .has(table)
+            .then((exists) => {
+              if (exists) {
+                resolve();
+              } else {
+                database
+                  .create(table, tables[table][0], tables[table][1])
+                  .then(() => {
+                    resolve();
+                  })
+                  .catch(reject);
+              }
+            })
+            .catch(reject);
+        }),
+      );
+    }
+
+    Promise.all(tablePromises)
+      .then(() => {
+        database
+          .table<User>("auth")
+          .get(["username"], (row) => row.username === "admin")
+          .then((rows) => {
+            if (rows.length > 0) {
+              console.info("Database loaded!");
               resolve();
             } else {
-              db.create(table, tables[table][0], tables[table][1])
+              database
+                .table("auth")
+                .add({
+                  username: "admin",
+                  key: bcrypt.hashSync("admin", 10),
+                })
                 .then(() => {
+                  console.info("Database loaded!");
                   resolve();
                 })
                 .catch(reject);
             }
           })
           .catch(reject);
-      }),
-    );
-  }
+      })
+      .catch(reject);
+  });
 
-  Promise.all(tablePromises)
-    .then(() => {
-      db.table("auth")
-        .add({
-          username: "admin",
-          key: bcrypt.hashSync("admin", 10),
-        })
-        .then(() => {
-          console.info("Database loaded!");
-          resolve();
-        })
-        .catch(reject);
-    })
-    .catch(reject);
+  return database;
+};
+
+export let db = await loadDB();
+
+ifConfigReloaded(async () => {
+  await new Promise<void>((done) => {
+    console.info("Reloading database...");
+    db.close()
+      .then(() => {
+        loadDB()
+          .then((newDb) => {
+            db = newDb;
+            done();
+          })
+          .catch((error) => {
+            console.error(error);
+            done();
+            process.exit(1);
+          });
+      })
+      .catch((error) => {
+        console.error(error);
+        done();
+        process.exit(1);
+      });
+  });
+});
+
+runAtShutdown("db", async () => {
+  await db.close();
 });

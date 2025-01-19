@@ -3,9 +3,9 @@ import { Router } from "express";
 import { generateToken, type User } from "../../../../modules/auth.js";
 import { db } from "../../../../modules/db.js";
 
-export const authApiV1Route = Router();
+export const apiAuthV1Route = Router();
 
-authApiV1Route.post("/login", (req, res, next) => {
+apiAuthV1Route.post("/login", (req, res, next) => {
   db.table("auth")
     .all()
     .then((users) => {

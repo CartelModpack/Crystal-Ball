@@ -264,6 +264,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@gavinhsmith/shutdown@npm:^1.1.7":
+  version: 1.1.7
+  resolution: "@gavinhsmith/shutdown@npm:1.1.7"
+  checksum: 10c0/4ed6f771d4aad67b4d762d56d5602542aac54f49f3c088a3d5c61c4c60eee225beca1c5ce2ee1f2ef7e8b336541e420f99a048df78cb87d69d8b6903b4dbe94c
+  languageName: node
+  linkType: hard
+
 "@gavinhsmith/simpledb@npm:^1.2.2":
   version: 1.2.2
   resolution: "@gavinhsmith/simpledb@npm:1.2.2"
@@ -1756,6 +1763,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "crystal-ball@workspace:."
   dependencies:
+    "@gavinhsmith/shutdown": "npm:^1.1.7"
     "@gavinhsmith/simpledb": "npm:^1.2.2"
     "@types/bcrypt": "npm:^5"
     "@types/express": "npm:^5.0.0"
@@ -1774,6 +1782,8 @@ __metadata:
     rimraf: "npm:^6.0.1"
     semver: "npm:^7.6.3"
     typescript: "npm:^5.7.3"
+  bin:
+    crystal-ball-app: ./bin/app.js
   languageName: unknown
   linkType: soft
 

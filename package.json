@@ -14,6 +14,7 @@
   "packageManager": "yarn@4.6.0",
   "packwiz": "0626c00149a8d9a5e9f76e5640e7b8b95c064350",
   "dependencies": {
+    "@gavinhsmith/shutdown": "^1.1.7",
     "@gavinhsmith/simpledb": "^1.2.2",
     "bcrypt": "^5.1.1",
     "commander": "^13.0.0",
