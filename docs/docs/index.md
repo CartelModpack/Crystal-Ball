@@ -93,6 +93,25 @@ Gets a list of all modpacks in the database, lists the versions that support the
 
 ///
 
+/// details | `GET /packs/:slug`
+    type: get-request
+
+### ![GET](https://img.shields.io/badge/GET-2b9b46?style=flat-square) [`{!partials/text/api_v1_root.md!}/packs/:slug`]({!partials/text/api_v1_root.md!}/packs/:slug)
+
+Gets a modpack and its data.
+
+#### Paramaters
+
+| Paramater | Description |
+| :-------- | :---------- |
+| slug      | The modpack slug |
+
+#### Response
+
+{!partials/types/modpack.md!lines=1-52}
+
+///
+
 /// details | `POST /packs/create`
     type: post-request
 
