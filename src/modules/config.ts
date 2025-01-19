@@ -39,6 +39,9 @@ type Config = ProdConfig | DevConfig;
 /** A random key for JWT tokens. */
 const randomToken = randomBytes(64).toString("hex");
 
+/** All required items (for schema). */
+export const requiredConfigProps: (keyof DevConfig)[] = ["port"];
+
 /** The default config. */
 export const defaultConfig: Config = {
   dev: false,
@@ -96,7 +99,14 @@ const loadFileConfig: () => Partial<Config> = () => {
     // Create config if it doesnt exist, and load into file.
     writeFileSync(
       configFilePath,
-      JSON.stringify(omit(defaultConfig, "dev"), null, 2), // Dev doesnt need to be displayed at all, unless specified.
+      JSON.stringify(
+        {
+          $schema: "http://localhost:8080/api/v1/schema/options",
+          ...omit(defaultConfig, "dev"),
+        },
+        null,
+        2,
+      ), // Dev doesnt need to be displayed at all, unless specified.
     );
 
     console.info("Created config.json!");

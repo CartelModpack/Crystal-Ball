@@ -1,5 +1,6 @@
 import { Router } from "express";
 import semver from "semver";
+import { catchAPIError, sendAPIResponse } from "../../../../modules/api.js";
 import { db } from "../../../../modules/db.js";
 
 export const apiModpacksV1Route = Router();
@@ -46,18 +47,31 @@ const getModpacks: (version?: string) => Promise<Modpack[]> = (version) => {
  */
 apiModpacksV1Route.post("/create", (req, res, next) => {
   if (req.auth === null) {
-    next(new Error("403: No Access"));
+    next(403);
   } else {
     db.table<Modpack>("modpacks")
       .add(req.body as Modpack)
       .then((modpack) => {
-        res.status(200);
-        res.header("Content-Type", "application/json");
-        res.send(JSON.stringify(modpack));
-        res.end();
+        sendAPIResponse(res, modpack);
       })
-      .catch(next);
+      .catch(catchAPIError(next));
   }
+});
+
+apiModpacksV1Route.get("/:slug", (req, res, next) => {
+  db.table<Modpack>("modpacks")
+    .get([], (row) => (row as Modpack).slug === req.params.slug)
+    .then((pack) => {
+      if (pack.length > 0) {
+        sendAPIResponse(res, pack[0]);
+      } else {
+        next({
+          status: 404,
+          message: "No modpack found.",
+        });
+      }
+    })
+    .catch(catchAPIError(next));
 });
 
 /**
@@ -68,10 +82,7 @@ apiModpacksV1Route.post("/create", (req, res, next) => {
 apiModpacksV1Route.get("/", (req, res, next) => {
   getModpacks(req.query.version as string)
     .then((modpacks) => {
-      res.status(200);
-      res.header("Content-Type", "application/json");
-      res.send(JSON.stringify(modpacks));
-      res.end();
+      sendAPIResponse(res, modpacks);
     })
-    .catch(next);
+    .catch(catchAPIError(next));
 });

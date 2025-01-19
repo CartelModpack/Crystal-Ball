@@ -6,7 +6,6 @@ import express from "express";
 import { init as initShutdown, runAtShutdown } from "@gavinhsmith/shutdown";
 import { config, ifConfigReloaded } from "./modules/config.js";
 import { apiRoutes } from "./routes/api/api.js";
-import { schemaRoute } from "./routes/schema.js";
 import { webRoutes } from "./routes/web.js";
 
 // Inits
@@ -17,7 +16,6 @@ initShutdown();
 
 const app = express();
 
-app.use("/schema", schemaRoute);
 app.use("/api", apiRoutes);
 app.use("/", webRoutes);
 

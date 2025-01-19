@@ -6,26 +6,28 @@ title: API Documentation
 
 Documentation on API endpoints and their results.
 
-## Tools
-
-These are not really API endpoints, but are used for things such as config, etc...
-
-Can be accessed at: `{!partials/text/tools_root.md!}`
-
-/// details | `GET /schema/options`
-    type: get-request
-
-### ![GET](https://img.shields.io/badge/GET-2b9b46?style=flat-square) [`{!partials/text/tools_root.md!}/schema/options`]({!partials/text/tools_root.md!}/schema/options)
-
-Returns a JSON schema for `config.json`.
-
-///
-
 ## /v1 Endpoints
 
 Endpoints for v1 of the Crystal Ball API.
 
 Can be accessed at: `{!partials/text/api_v1_root.md!}`
+
+### Schema
+
+/// details | `GET /schema/options`
+    type: get-request
+
+### ![GET](https://img.shields.io/badge/GET-2b9b46?style=flat-square) [`{!partials/text/api_v1_root.md!}/schema/options`]({!partials/text/api_v1_root.md!}/schema/options)
+
+Returns a JSON schema for `config.json`.
+
+#### Response
+
+| Key   |   Type   | Value                                                                               |
+| :---- | :------: | :---------------------------------------------------------------------------------- |
+| token | `string` | A JWT Bearer token to be used in the authorization header. Is valid for 15 minutes. |
+
+///
 
 ### Authentication
 

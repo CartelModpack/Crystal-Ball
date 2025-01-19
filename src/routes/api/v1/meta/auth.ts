@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import { Router } from "express";
+import { catchAPIError, sendAPIResponse } from "../../../../modules/api.js";
 import { generateToken, type User } from "../../../../modules/auth.js";
 import { db } from "../../../../modules/db.js";
 
@@ -19,7 +20,10 @@ apiAuthV1Route.post("/login", (req, res, next) => {
       ) as unknown as User | null;
 
       if (user === null) {
-        next(new Error("No user."));
+        next({
+          status: 400,
+          message: "Invalid User/Pass",
+        });
       } else {
         bcrypt
           .compare((req.body as { password: string }).password, user.key)
@@ -27,16 +31,16 @@ apiAuthV1Route.post("/login", (req, res, next) => {
             if (equals) {
               const token = generateToken(user.username);
 
-              res.status(200);
-              res.header("Content-Type", "application/json");
-              res.send({ token });
-              res.end();
+              sendAPIResponse(res, { token });
             } else {
-              next(new Error("Wrong pass."));
+              next({
+                status: 400,
+                message: "Invalid User/Pass",
+              });
             }
           })
-          .catch(next);
+          .catch(catchAPIError(next));
       }
     })
-    .catch(next);
+    .catch(catchAPIError(next));
 });
