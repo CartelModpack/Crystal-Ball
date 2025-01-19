@@ -1,3 +1,20 @@
 site_name: Crytsal Ball
+repo_url: https://github.com/CartelModpack/Crystal-Ball/
 theme:
   name: material
+  palette:
+    primary: teal
+  icon:
+    admonition:
+      get-request: material/slash-forward-box
+      post-request: material/slash-forward-box
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+extra_css:
+  - css/layout.css
+  - css/admonitions.css
+nav:
+  - Home: index.md
+  - API Docs: docs/index.md

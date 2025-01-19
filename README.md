@@ -1,5 +1,7 @@
 # Crystal Ball
 
+Source code for Crystal Ball.
+
 Requires **Git**, **Go**, and **Node** to install/compile.
 
 ## Project Directory

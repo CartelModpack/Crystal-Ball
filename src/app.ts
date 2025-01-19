@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import http from "node:http";
+import { program } from "commander";
 import express from "express";
 import { init as initShutdown, runAtShutdown } from "@gavinhsmith/shutdown";
 import { config, ifConfigReloaded } from "./modules/config.js";
@@ -26,7 +27,15 @@ app.use("/", webRoutes);
 const server = http.createServer(app as unknown as undefined);
 
 server.listen(config().port, () => {
-  console.info(`Started server on port *:${String(config().port)}.`);
+  const flags: string[] = [];
+
+  for (const opt of Object.keys(program.opts())) {
+    flags.push(opt);
+  }
+
+  console.info(
+    `Started server on port *:${String(config().port)}. Flags: ${flags.join(", ")}`,
+  );
 });
 
 // Run on shutdown

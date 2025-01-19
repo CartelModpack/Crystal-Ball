@@ -5,7 +5,7 @@ import { db } from "../../../../modules/db.js";
 export const apiModpacksV1Route = Router();
 
 /** A modpack. */
-type Modpack = {
+export type Modpack = {
   slug: string;
   inherits: string;
   supportedVersions: string;

@@ -62,8 +62,8 @@ export const defaultDevConfig: Config = {
 if (process.env.NODE_ENV !== "production") {
   program.option("-d, --dev", "Run the program in developer mode.");
   program.option(
-    "--dev-docs-server <string>",
-    "If using dev, where is the MkDocs dev server. ",
+    "--dev-docs-port <number>",
+    "If using dev, what port has the MkDocs dev server. ",
   );
 }
 
