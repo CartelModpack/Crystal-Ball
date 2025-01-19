@@ -3,6 +3,7 @@
   --admonition-color-request-border: var(--admonition-color-request), 0.1;
   --admonition-color-request-get: 43, 155, 70;
   --admonition-color-request-post: 238, 205, 72;
+  --admonition-color-request-delete: 234, 61, 61;
 }
 
 /* Get Request */
@@ -35,4 +36,20 @@
   background-color: rgb(var(--admonition-color-request-post));
   -webkit-mask-image: var(--md-admonition-icon--post-request);
   mask-image: var(--md-admonition-icon--post-request);
+}
+
+/* Delete Request */
+.md-typeset .admonition.delete-request,
+.md-typeset details.delete-request {
+  border-color: rgb(var(--admonition-color-request));
+}
+.md-typeset .delete-request > .admonition-title,
+.md-typeset .delete-request > summary {
+  background-color: rgba(var(--admonition-color-request-border));
+}
+.md-typeset .delete-request > .admonition-title::before,
+.md-typeset .delete-request > summary::before {
+  background-color: rgb(var(--admonition-color-request-delete));
+  -webkit-mask-image: var(--md-admonition-icon--delete-request);
+  mask-image: var(--md-admonition-icon--delete-request);
 }

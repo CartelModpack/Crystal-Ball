@@ -8,6 +8,7 @@ theme:
     admonition:
       get-request: material/slash-forward-box
       post-request: material/slash-forward-box
+      delete-request: material/slash-forward-box
 markdown_extensions:
   - attr_list
   - admonition

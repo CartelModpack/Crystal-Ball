@@ -73,7 +73,7 @@ Gets a list of all modpacks in the database, lists the versions that support the
 
 #### Query Paramaters
 
-| Name      | Value                                |
+| Query      | Description                                |
 | :-------- | :----------------------------------- |
 | `version` | The version of Minecraft being used. |
 | `slug`    | The slug of a modpack. |
@@ -112,14 +112,14 @@ Gets a modpack and its data.
 
 ///
 
-/// details | `POST /packs/create`
+/// details | `POST /packs/modify`
     type: post-request
 
-### ![POST](https://img.shields.io/badge/POST-eecd48?style=flat-square) [`{!partials/text/api_v1_root.md!}/packs/create`]({!partials/text/api_v1_root.md!}/packs/create)
+### ![POST](https://img.shields.io/badge/POST-eecd48?style=flat-square) [`{!partials/text/api_v1_root.md!}/packs/modify`]({!partials/text/api_v1_root.md!}/packs/modify)
 
 > Requires authentication.
 
-Adds a new modpack to the database.
+Modify/add a modpack to the database.
 
 #### Body
 
@@ -128,5 +128,31 @@ Adds a new modpack to the database.
 #### Response
 
 {!partials/types/modpack.md!lines=1-52}
+
+///
+
+/// details | `DELETE /packs/modify`
+    type: delete-request
+
+### ![DELETE](https://img.shields.io/badge/DELETE-ea3d3d?style=flat-square) [`{!partials/text/api_v1_root.md!}/packs/modify`]({!partials/text/api_v1_root.md!}/packs/modify)
+
+> Requires authentication.
+
+Delete a modpack from the database.
+
+#### Body
+
+#### Body
+
+| Key      |   Type   | Required | Explanation               |
+| :------- | :------: | :------: | :------------------------ |
+| slug | `string` |   Yes    | The slug of the mod to delete. |
+
+#### Response
+
+| Key      |   Type   | Explanation               |
+| :------- | :------: | :------------------------ |
+| status   |   `200`  | The status of the request. If anything but 200 a failure occured. |
+| message  | `string` | An attached message. |
 
 ///

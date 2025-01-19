@@ -58,11 +58,11 @@ const getModpacks: (version?: string, slug?: string) => Promise<Modpack[]> = (
 };
 
 /**
- * POST  /v1/packs/create
+ * POST  /v1/packs/modify
  *
- * Adds a new modpack to the the server.
+ * Modify/adds a modpack to the server.
  */
-apiModpacksV1Route.post("/create", (req, res, next) => {
+apiModpacksV1Route.post("/modify", (req, res, next) => {
   if (req.auth === null) {
     next(new APIError(401));
   } else {
@@ -70,6 +70,40 @@ apiModpacksV1Route.post("/create", (req, res, next) => {
       .add(req.body as Modpack)
       .then((modpack) => {
         sendAPIResponse(res, modpack);
+      })
+      .catch(catchAPIError(next));
+  }
+});
+
+/**
+ * DELETE  /v1/packs/modify
+ *
+ * Removes a modpack to the server.
+ */
+apiModpacksV1Route.delete("/modify", (req, res, next) => {
+  if (req.auth === null) {
+    next(new APIError(401));
+  } else {
+    db.table<Modpack>("modpacks")
+      .get(
+        [],
+        (pack) =>
+          (pack as Modpack).slug === (req.body as { slug: string }).slug,
+      )
+      .then((pack) => {
+        if (pack.length > 0) {
+          db.table<Modpack>("modpacks")
+            .delete("slug", (req.body as { slug: string }).slug)
+            .then(() => {
+              sendAPIResponse(res, {
+                status: 200,
+                message: "Modpack removed.",
+              });
+            })
+            .catch(catchAPIError(next));
+        } else {
+          next(new APIError(404, "Invalid modpack."));
+        }
       })
       .catch(catchAPIError(next));
   }
