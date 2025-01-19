@@ -1,10 +1,11 @@
 import { execSync } from "child_process";
-import { mkdirSync } from "fs";
+import { existsSync, mkdirSync, rmdirSync } from "fs";
 import packageFile from "../package.json" with { type: "json" };
 import { join } from "path";
 
 const cwd = join(process.cwd(), "./lib/packwiz");
 
+if (existsSync(cwd)) rmdirSync(cwd);
 mkdirSync(cwd, { recursive: true });
 
 console.info("Downloading required version of packwiz...");
