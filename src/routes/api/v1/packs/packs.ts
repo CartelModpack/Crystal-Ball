@@ -40,27 +40,11 @@ const getModpacks: (version?: string) => Promise<Modpack[]> = (version) => {
 };
 
 /**
- * GET   /v1/modpacks/list
- *
- * Lists all modpacks on the server.
- */
-apiModpacksV1Route.get("/list", (req, res, next) => {
-  getModpacks(req.query.version as string)
-    .then((modpacks) => {
-      res.status(200);
-      res.header("Content-Type", "application/json");
-      res.send(JSON.stringify(modpacks));
-      res.end();
-    })
-    .catch(next);
-});
-
-/**
- * POST  /v1/modpacks/new
+ * POST  /v1/packs/new
  *
  * Adds a new modpack to the the server.
  */
-apiModpacksV1Route.post("/new", (req, res, next) => {
+apiModpacksV1Route.post("/create", (req, res, next) => {
   if (req.auth === null) {
     next(new Error("403: No Access"));
   } else {
@@ -74,4 +58,20 @@ apiModpacksV1Route.post("/new", (req, res, next) => {
       })
       .catch(next);
   }
+});
+
+/**
+ * GET   /v1/packs
+ *
+ * Lists all modpacks on the server.
+ */
+apiModpacksV1Route.get("/", (req, res, next) => {
+  getModpacks(req.query.version as string)
+    .then((modpacks) => {
+      res.status(200);
+      res.header("Content-Type", "application/json");
+      res.send(JSON.stringify(modpacks));
+      res.end();
+    })
+    .catch(next);
 });

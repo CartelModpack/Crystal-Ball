@@ -1,7 +1,11 @@
+# Git + Node
 /node_modules/
-/dist/
-/build/
+/bin/
+/site/
 /artifacts/
 /coverage/
 /pnpm-lock.yaml
 .git/
+
+# Markdown Files
+*.md

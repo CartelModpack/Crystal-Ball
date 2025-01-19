@@ -5,6 +5,11 @@ import { db } from "../../../../modules/db.js";
 
 export const apiAuthV1Route = Router();
 
+/**
+ * POST  /v1/auth/login
+ *
+ * Generate a new JWT for server operations.
+ */
 apiAuthV1Route.post("/login", (req, res, next) => {
   db.table("auth")
     .all()
@@ -15,25 +20,23 @@ apiAuthV1Route.post("/login", (req, res, next) => {
 
       if (user === null) {
         next(new Error("No user."));
+      } else {
+        bcrypt
+          .compare((req.body as { password: string }).password, user.key)
+          .then((equals) => {
+            if (equals) {
+              const token = generateToken(user.username);
 
-        return;
+              res.status(200);
+              res.header("Content-Type", "application/json");
+              res.send({ token });
+              res.end();
+            } else {
+              next(new Error("Wrong pass."));
+            }
+          })
+          .catch(next);
       }
-
-      bcrypt
-        .compare((req.body as { password: string }).password, user.key)
-        .then((equals) => {
-          if (equals) {
-            const token = generateToken(user.username);
-
-            res.status(200);
-            res.header("Content-Type", "application/json");
-            res.send({ token });
-            res.end();
-          } else {
-            next(new Error("Wrong pass."));
-          }
-        })
-        .catch(next);
     })
     .catch(next);
 });

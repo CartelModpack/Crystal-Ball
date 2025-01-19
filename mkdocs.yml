@@ -9,12 +9,18 @@ theme:
       get-request: material/slash-forward-box
       post-request: material/slash-forward-box
 markdown_extensions:
+  - attr_list
   - admonition
+  - pymdownx.blocks.details
   - pymdownx.details
   - pymdownx.superfences
+  - markdown_include.include:
+      base_path: docs
 extra_css:
   - css/layout.css
   - css/admonitions.css
+extra_javascript:
+  - js/replace.js
 nav:
   - Home: index.md
   - API Docs: docs/index.md

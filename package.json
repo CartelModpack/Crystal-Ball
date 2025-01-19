@@ -47,7 +47,7 @@
     "dev:compile:app": "tsc --watch",
     "dev:docs": "mkdocs serve -a 0.0.0.0:8081",
     "dev:server": "nodemon . --dev --dev-docs-port 8081",
-    "dev": "npm-run-all --parallel dev:server dev:compile:app dev:docs",
+    "dev": "npm-run-all clean lint --parallel dev:server dev:compile:app dev:docs",
     "scripts:packwiz": "rimraf ./lib/packwiz && node ./scripts/install_packwiz.js",
     "postinstall": "npm-run-all scripts:packwiz --print-label"
   }
