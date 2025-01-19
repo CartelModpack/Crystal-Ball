@@ -12,8 +12,10 @@ export const apiModpacksV1Route = Router();
 /** A modpack. */
 export type Modpack = {
   slug: string;
+  name: string;
   inherits: string;
-  supportedVersions: string;
+  version: number;
+  supportedMCVersions: string;
   mods: string;
   resources: string;
   shaders: string;
@@ -26,12 +28,23 @@ export type Modpack = {
  * @param version - The version that we would be use.
  * @returns The correct promise.
  */
-const getModpacks: (version?: string) => Promise<Modpack[]> = (version) => {
+const getModpacks: (version?: string, slug?: string) => Promise<Modpack[]> = (
+  version,
+  slug,
+) => {
   if (version !== undefined) {
     return db.table<Modpack>("modpacks").get([], (modpack) => {
-      const vers = (modpack as Modpack).supportedVersions.split(",");
+      if (slug !== undefined && (modpack as Modpack).slug !== slug) {
+        return false;
+      }
+
+      const vers = (modpack as Modpack).supportedMCVersions.split(",");
 
       for (const ver of vers) {
+        if (ver.trim() === "") {
+          continue;
+        }
+
         if (!semver.satisfies(version, ver)) {
           return false;
         }
@@ -45,34 +58,39 @@ const getModpacks: (version?: string) => Promise<Modpack[]> = (version) => {
 };
 
 /**
- * POST  /v1/packs/new
+ * POST  /v1/packs/create
  *
  * Adds a new modpack to the the server.
  */
-apiModpacksV1Route.post("/create", (req, res) => {
+apiModpacksV1Route.post("/create", (req, res, next) => {
   if (req.auth === null) {
-    throw new APIError(401);
+    next(new APIError(401));
   } else {
     db.table<Modpack>("modpacks")
       .add(req.body as Modpack)
       .then((modpack) => {
         sendAPIResponse(res, modpack);
       })
-      .catch(catchAPIError());
+      .catch(catchAPIError(next));
   }
 });
 
-apiModpacksV1Route.get("/:slug", (req, res) => {
+/**
+ * GET   /v1/packs/:slug
+ *
+ * Get a modpack on the server.
+ */
+apiModpacksV1Route.get("/:slug", (req, res, next) => {
   db.table<Modpack>("modpacks")
     .get([], (row) => (row as Modpack).slug === req.params.slug)
     .then((pack) => {
       if (pack.length > 0) {
         sendAPIResponse(res, pack[0]);
       } else {
-        throw new APIError(404, "No modpack found.");
+        next(new APIError(404));
       }
     })
-    .catch(catchAPIError());
+    .catch(catchAPIError(next));
 });
 
 /**
@@ -80,10 +98,10 @@ apiModpacksV1Route.get("/:slug", (req, res) => {
  *
  * Lists all modpacks on the server.
  */
-apiModpacksV1Route.get("/", (req, res) => {
-  getModpacks(req.query.version as string)
+apiModpacksV1Route.get("/", (req, res, next) => {
+  getModpacks(req.query.version as string, req.query.slug as string)
     .then((modpacks) => {
       sendAPIResponse(res, modpacks);
     })
-    .catch(catchAPIError());
+    .catch(catchAPIError(next));
 });

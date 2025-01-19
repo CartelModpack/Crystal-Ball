@@ -76,6 +76,7 @@ Gets a list of all modpacks in the database, lists the versions that support the
 | Name      | Value                                |
 | :-------- | :----------------------------------- |
 | `version` | The version of Minecraft being used. |
+| `slug`    | The slug of a modpack. |
 
 #### Response
 
@@ -85,7 +86,7 @@ Gets a list of all modpacks in the database, lists the versions that support the
         </tr>
         <tr>
             <td>
-                {!partials/types/modpack.md!lines=1-42}
+                {!partials/types/modpack.md!lines=1-52}
             </td>
         </tr>
 </table>
@@ -103,10 +104,10 @@ Adds a new modpack to the database.
 
 #### Body
 
-{!partials/types/modpack.md!lines=43-92}
+{!partials/types/modpack.md!lines=53-114}
 
 #### Response
 
-{!partials/types/modpack.md!lines=1-42}
+{!partials/types/modpack.md!lines=1-52}
 
 ///

@@ -19,14 +19,12 @@ export const errorHandler: (
   }
 
   if (error instanceof APIError) {
-    console.warn(error.getReadable());
     sendAPIError(res, error);
   } else {
     readFile(join(process.cwd(), "./site/404.html"), "utf-8", (error, data) => {
       res.status(404);
       res.header("Content-Type", "text/html");
       if (error) {
-        console.warn(error);
         res.send("<h1><code>404 File Not Found</code></h1>");
       } else {
         res.send(data);

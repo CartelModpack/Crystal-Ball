@@ -1,4 +1,9 @@
-import { type Request, type Response, Router } from "express";
+import {
+  type NextFunction,
+  type Request,
+  type Response,
+  Router,
+} from "express";
 import { run } from "../../../../../lib/json_typegen_wasm/json_typegen_wasm.js";
 import packageFile from "../../../../../package.json" with { type: "json" };
 import { APIError, sendAPIResponse } from "../../../../modules/api.js";
@@ -26,6 +31,7 @@ const schemaGenerator = (
   return (
     req: Request & { params: { output: string | null } },
     res: Response,
+    next: NextFunction,
   ) => {
     const outputMode = req.params.output ?? "json_schema";
 
@@ -47,7 +53,7 @@ const schemaGenerator = (
 
       sendAPIResponse(res, content);
     } catch (error) {
-      throw new APIError(400, `Invalid type ${outputMode}`, error as Error);
+      next(new APIError(400, `Invalid type ${outputMode}`, error as Error));
     }
   };
 };

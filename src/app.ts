@@ -68,3 +68,5 @@ ifConfigReloaded(async (conf) => {
     });
   });
 });
+
+process.on("uncaughtException", console.error);

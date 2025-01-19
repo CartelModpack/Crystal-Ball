@@ -1,4 +1,4 @@
-import type { Response } from "express";
+import type { NextFunction, Response } from "express";
 import { config } from "./config.js";
 import { omit } from "./tools.js";
 
@@ -28,7 +28,7 @@ export class APIError extends Error {
    * Construct an API error.
    *
    * @param status - The partial data.
-   * @returns A complete {@link APIErrorProps}.
+   * @returns A complete set of {@link APIErrorProps}.
    */
   constructor(status?: number, message?: string, cause?: Error);
   constructor(
@@ -120,13 +120,21 @@ export const sendAPIError: (res: Response, error: APIError) => void = (
 /**
  * Catch an API error from a `Promise.catch()` call and send it via `next()`.
  *
+ * @param next - The next function from the router.
  * @param status - The status code you want to send. Defaults to `500`.
  * @returns A method that will be run from a catch call.
  */
-export const catchAPIError: (status?: number) => (reason: Error) => void = (
-  status,
-) => {
+export const catchAPIError: (
+  next?: NextFunction,
+  status?: number,
+) => (reason: Error) => void = (next, status) => {
   return (reason) => {
-    throw new APIError(status, reason.message, reason);
+    const error = new APIError(status, reason.message, reason);
+
+    if (next === undefined) {
+      throw error;
+    } else {
+      next(error);
+    }
   };
 };

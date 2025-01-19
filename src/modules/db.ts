@@ -12,8 +12,10 @@ const tables: { [key: string]: [{ [key: string]: DataType }, string] } = {
   modpacks: [
     {
       slug: "string",
+      name: "string",
       inherits: "string",
-      supportedVersions: "string",
+      version: "int",
+      supportedMCVersions: "string",
       mods: "string",
       resources: "string",
       shaders: "string",
@@ -32,7 +34,7 @@ const tables: { [key: string]: [{ [key: string]: DataType }, string] } = {
 
 // Preloads
 const preloads: { [key: string]: { [key: string]: unknown } | undefined } = {
-  user: { username: "admin", key: bcrypt.hashSync("admin", 10) },
+  auth: { username: "admin", key: bcrypt.hashSync("admin", 10) },
 };
 
 const loadDB = async () => {

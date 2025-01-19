@@ -15,18 +15,18 @@ export const apiAuthV1Route = Router();
  *
  * Generate a new JWT for server operations.
  */
-apiAuthV1Route.post("/login", (req, res) => {
-  const invalidUserError = new APIError(400, "Invalid User/Pass.");
+apiAuthV1Route.post("/login", (req, res, next) => {
+  const invalidUserError = new APIError(401, "Invalid User/Pass.");
 
   db.table("auth")
     .all()
     .then((users) => {
       const user = users.find(
         (c) => c.username === (req.body as { username: string }).username,
-      ) as unknown as User | null;
+      ) as unknown as User | undefined;
 
-      if (user === null) {
-        throw invalidUserError;
+      if (user === undefined) {
+        next(invalidUserError);
       } else {
         bcrypt
           .compare((req.body as { password: string }).password, user.key)
@@ -36,11 +36,11 @@ apiAuthV1Route.post("/login", (req, res) => {
 
               sendAPIResponse(res, { token });
             } else {
-              throw invalidUserError;
+              next(invalidUserError);
             }
           })
-          .catch(catchAPIError());
+          .catch(catchAPIError(next));
       }
     })
-    .catch(catchAPIError());
+    .catch(catchAPIError(next));
 });
