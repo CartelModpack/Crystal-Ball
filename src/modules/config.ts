@@ -41,6 +41,12 @@ const randomToken = randomBytes(64).toString("hex");
 
 /** All required items (for schema). */
 export const requiredConfigProps: (keyof DevConfig)[] = ["port"];
+/** All items that require other options. */
+export const dependentConfigProps: {
+  [P in keyof Partial<DevConfig>]: (keyof DevConfig)[];
+} = {
+  devDocsPort: ["dev"],
+};
 
 /** The default config. */
 export const defaultConfig: Config = {
