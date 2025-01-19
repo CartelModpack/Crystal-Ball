@@ -5,6 +5,7 @@ import { program } from "commander";
 import express from "express";
 import { init as initShutdown, runAtShutdown } from "@gavinhsmith/shutdown";
 import { config, ifConfigReloaded } from "./modules/config.js";
+import { errorHandler } from "./modules/error.js";
 import { apiRoutes } from "./routes/api/api.js";
 import { webRoutes } from "./routes/web.js";
 
@@ -18,6 +19,8 @@ const app = express();
 
 app.use("/api", apiRoutes);
 app.use("/", webRoutes);
+
+app.use(errorHandler);
 
 // Server
 

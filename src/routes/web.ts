@@ -1,11 +1,10 @@
-import { readFile } from "node:fs";
 import { join } from "node:path";
 import { Router, static as staticFolder } from "express";
 import { config } from "../modules/config.js";
 
 export const webRoutes = Router();
 
-webRoutes.use((req, res, next) => {
+webRoutes.use("/", (req, res, next) => {
   const conf = config();
 
   if (conf.dev) {
@@ -18,13 +17,8 @@ webRoutes.use((req, res, next) => {
   }
 });
 
-webRoutes.use(staticFolder(join(process.cwd(), "./site")));
+webRoutes.use("/", staticFolder(join(process.cwd(), "./site")));
 
-webRoutes.use((req, res) => {
-  readFile(join(process.cwd(), "./site/404.html"), "utf-8", (error, data) => {
-    res.status(404);
-    res.header("Content-Type", "text/html");
-    res.send(data);
-    res.end();
-  });
+webRoutes.use(() => {
+  throw new Error("404 File Not Found");
 });

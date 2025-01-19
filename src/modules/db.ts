@@ -3,12 +3,11 @@ import { runAtShutdown } from "@gavinhsmith/shutdown";
 import { Database } from "@gavinhsmith/simpledb";
 // eslint-disable-next-line no-restricted-imports
 import type { DataType } from "@gavinhsmith/simpledb/dist/module/lib/convert.js";
-import type { User } from "./auth.js";
 import { config, ifConfigReloaded } from "./config.js";
 
 console.info("Loading database...");
 
-// Preloads
+// Tables
 const tables: { [key: string]: [{ [key: string]: DataType }, string] } = {
   modpacks: [
     {
@@ -31,6 +30,11 @@ const tables: { [key: string]: [{ [key: string]: DataType }, string] } = {
   ],
 };
 
+// Preloads
+const preloads: { [key: string]: { [key: string]: unknown } | undefined } = {
+  user: { username: "admin", key: bcrypt.hashSync("admin", 10) },
+};
+
 const loadDB = async () => {
   const database = Database(config().database, { verbose: config().verbose });
 
@@ -49,7 +53,17 @@ const loadDB = async () => {
                 database
                   .create(table, tables[table][0], tables[table][1])
                   .then(() => {
-                    resolve();
+                    if (preloads[table] === undefined) {
+                      resolve();
+                    } else {
+                      database
+                        .table<{ [key: string]: string }>(table)
+                        .add(preloads[table] as { [key: string]: string })
+                        .then(() => {
+                          resolve();
+                        })
+                        .catch(reject);
+                    }
                   })
                   .catch(reject);
               }
@@ -61,28 +75,8 @@ const loadDB = async () => {
 
     Promise.all(tablePromises)
       .then(() => {
-        database
-          .table<User>("auth")
-          .get(["username"], (row) => row.username === "admin")
-          .then((rows) => {
-            if (rows.length > 0) {
-              console.info("Database loaded!");
-              resolve();
-            } else {
-              database
-                .table("auth")
-                .add({
-                  username: "admin",
-                  key: bcrypt.hashSync("admin", 10),
-                })
-                .then(() => {
-                  console.info("Database loaded!");
-                  resolve();
-                })
-                .catch(reject);
-            }
-          })
-          .catch(reject);
+        console.info("Database loaded!");
+        resolve();
       })
       .catch(reject);
   });

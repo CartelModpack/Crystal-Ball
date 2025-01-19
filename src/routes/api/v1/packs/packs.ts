@@ -1,6 +1,10 @@
 import { Router } from "express";
 import semver from "semver";
-import { catchAPIError, sendAPIResponse } from "../../../../modules/api.js";
+import {
+  APIError,
+  catchAPIError,
+  sendAPIResponse,
+} from "../../../../modules/api.js";
 import { db } from "../../../../modules/db.js";
 
 export const apiModpacksV1Route = Router();
@@ -45,33 +49,30 @@ const getModpacks: (version?: string) => Promise<Modpack[]> = (version) => {
  *
  * Adds a new modpack to the the server.
  */
-apiModpacksV1Route.post("/create", (req, res, next) => {
+apiModpacksV1Route.post("/create", (req, res) => {
   if (req.auth === null) {
-    next(403);
+    throw new APIError(401);
   } else {
     db.table<Modpack>("modpacks")
       .add(req.body as Modpack)
       .then((modpack) => {
         sendAPIResponse(res, modpack);
       })
-      .catch(catchAPIError(next));
+      .catch(catchAPIError());
   }
 });
 
-apiModpacksV1Route.get("/:slug", (req, res, next) => {
+apiModpacksV1Route.get("/:slug", (req, res) => {
   db.table<Modpack>("modpacks")
     .get([], (row) => (row as Modpack).slug === req.params.slug)
     .then((pack) => {
       if (pack.length > 0) {
         sendAPIResponse(res, pack[0]);
       } else {
-        next({
-          status: 404,
-          message: "No modpack found.",
-        });
+        throw new APIError(404, "No modpack found.");
       }
     })
-    .catch(catchAPIError(next));
+    .catch(catchAPIError());
 });
 
 /**
@@ -79,10 +80,10 @@ apiModpacksV1Route.get("/:slug", (req, res, next) => {
  *
  * Lists all modpacks on the server.
  */
-apiModpacksV1Route.get("/", (req, res, next) => {
+apiModpacksV1Route.get("/", (req, res) => {
   getModpacks(req.query.version as string)
     .then((modpacks) => {
       sendAPIResponse(res, modpacks);
     })
-    .catch(catchAPIError(next));
+    .catch(catchAPIError());
 });

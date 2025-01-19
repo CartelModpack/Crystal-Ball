@@ -1,6 +1,10 @@
 import bcrypt from "bcrypt";
 import { Router } from "express";
-import { catchAPIError, sendAPIResponse } from "../../../../modules/api.js";
+import {
+  APIError,
+  catchAPIError,
+  sendAPIResponse,
+} from "../../../../modules/api.js";
 import { generateToken, type User } from "../../../../modules/auth.js";
 import { db } from "../../../../modules/db.js";
 
@@ -11,7 +15,9 @@ export const apiAuthV1Route = Router();
  *
  * Generate a new JWT for server operations.
  */
-apiAuthV1Route.post("/login", (req, res, next) => {
+apiAuthV1Route.post("/login", (req, res) => {
+  const invalidUserError = new APIError(400, "Invalid User/Pass.");
+
   db.table("auth")
     .all()
     .then((users) => {
@@ -20,10 +26,7 @@ apiAuthV1Route.post("/login", (req, res, next) => {
       ) as unknown as User | null;
 
       if (user === null) {
-        next({
-          status: 400,
-          message: "Invalid User/Pass",
-        });
+        throw invalidUserError;
       } else {
         bcrypt
           .compare((req.body as { password: string }).password, user.key)
@@ -33,14 +36,11 @@ apiAuthV1Route.post("/login", (req, res, next) => {
 
               sendAPIResponse(res, { token });
             } else {
-              next({
-                status: 400,
-                message: "Invalid User/Pass",
-              });
+              throw invalidUserError;
             }
           })
-          .catch(catchAPIError(next));
+          .catch(catchAPIError());
       }
     })
-    .catch(catchAPIError(next));
+    .catch(catchAPIError());
 });

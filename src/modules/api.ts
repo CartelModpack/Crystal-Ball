@@ -1,31 +1,73 @@
-import type { NextFunction, Request, Response } from "express";
+import type { Response } from "express";
 import { config } from "./config.js";
 import { omit } from "./tools.js";
 
 // Types
 
 /** An API error and its information. */
-type APIErrorObject = {
+type APIErrorProps = {
   /** The status code to send. */
   status: number;
-  /** The error message. */
+  /** The user-readable message attached to this error. */
   message: string;
-  /** An error object, only sent to client in dev mode. */
-  error: Error;
+  /** The error that caused this error. Only displayed in `dev` mode. */
+  cause?: string;
 };
 
-/** An error code or error information. */
-type APIError = number | Partial<APIErrorObject>;
+/**
+ * An API error.
+ */
+export class APIError extends Error {
+  static readonly errorMessages: Map<number, string> = new Map();
 
-// Defaults
+  readonly status: number;
+  readonly message: string;
+  readonly cause?: Error;
 
-const errorMessages: Map<number, string> = new Map();
+  /**
+   * Construct an API error.
+   *
+   * @param status - The partial data.
+   * @returns A complete {@link APIErrorProps}.
+   */
+  constructor(status?: number, message?: string, cause?: Error);
+  constructor(
+    status: number | undefined,
+    message: string | undefined,
+    cause: Error | undefined,
+  ) {
+    super();
 
-errorMessages.set(200, "Request Successful.");
-errorMessages.set(400, "Unknown User Error.");
-errorMessages.set(403, "Access Restricted.");
-errorMessages.set(404, "Content Not Found.");
-errorMessages.set(500, "Unknown Server Error.");
+    this.status = status ?? 500;
+    this.message =
+      message ??
+      (config().dev && cause !== undefined
+        ? cause.message
+        : (APIError.errorMessages.get(this.status) as string));
+
+    if (config().dev) {
+      this.cause = cause ?? new Error(this.message);
+    }
+  }
+
+  /** Get an object representation of the error for web handling. */
+  getReadable: () => APIErrorProps = () => {
+    const error: APIErrorProps = {
+      status: this.status,
+      message: this.message,
+      cause: String(this.cause),
+    };
+
+    return config().dev ? error : omit(error, "cause");
+  };
+}
+
+APIError.errorMessages.set(200, "Request Successful.");
+APIError.errorMessages.set(400, "Unknown User Error.");
+APIError.errorMessages.set(401, "Access Restricted.");
+APIError.errorMessages.set(403, "Access Forbidden.");
+APIError.errorMessages.set(404, "Content Not Found.");
+APIError.errorMessages.set(500, "Unknown Server Error.");
 
 // Helpers
 
@@ -45,38 +87,6 @@ const sendJSONContent: (
   res.header("Content-Type", "application/json");
   res.send(JSON.stringify(content));
   res.end();
-};
-
-/**
- * Parse an API error code/partial API error data into a complete error.
- *
- * @param error - The partial data.
- * @returns A complete {@link APIErrorObject}.
- */
-const parseAPIError: (error: APIError) => APIErrorObject = (error) => {
-  if (typeof error === "number") {
-    const outError: APIErrorObject = {
-      status: error,
-      message: errorMessages.get(error) as string,
-      error: new Error(errorMessages.get(error)),
-    };
-
-    return outError;
-  }
-
-  const status = error.status ?? 500;
-
-  const out: APIErrorObject = {
-    status,
-    message:
-      error.message ??
-      (error.error !== undefined && config().dev
-        ? error.error.message
-        : (errorMessages.get(status) as string)),
-    error: error.error ?? new Error(errorMessages.get(status)),
-  };
-
-  return out;
 };
 
 // Exports
@@ -104,37 +114,19 @@ export const sendAPIError: (res: Response, error: APIError) => void = (
   res,
   error,
 ) => {
-  const parsedError = parseAPIError(error);
-
-  sendJSONContent(
-    res,
-    config().dev ? omit(parsedError, "error") : parsedError,
-    parsedError.status,
-  );
+  sendJSONContent(res, error.getReadable(), error.status);
 };
 
 /**
- * Catch an API error from a `Promise.catch()` call.
+ * Catch an API error from a `Promise.catch()` call and send it via `next()`.
  *
- * @param next - The next function from the handler.
  * @param status - The status code you want to send. Defaults to `500`.
  * @returns A method that will be run from a catch call.
  */
-export const catchAPIError: (
-  next: NextFunction,
-  status?: number,
-) => (reason: Error) => void = (next, status) => {
+export const catchAPIError: (status?: number) => (reason: Error) => void = (
+  status,
+) => {
   return (reason) => {
-    next({ status, error: reason });
+    throw new APIError(status, reason.message, reason);
   };
-};
-
-export const handleAPIError: (
-  error: APIError,
-  req: Request,
-  res: Response,
-  next: NextFunction,
-  // eslint-disable-next-line @typescript-eslint/naming-convention, @typescript-eslint/no-unused-vars
-) => void = (error, _req, res, _next) => {
-  sendAPIError(res, error);
 };

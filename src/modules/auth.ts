@@ -29,12 +29,10 @@ export const enforceAuthToken: (
     next();
   } else {
     jwt.verify(token, config().jwt, {}, (err, data) => {
-      if (err) {
-        next();
-      } else {
+      if (!err) {
         req.auth = data as { iat: number; exp: number };
-        next();
       }
+      next();
     });
   }
 };
