@@ -133,6 +133,7 @@ dist
 /bin/
 /lib/packwiz/
 /site/
+/temp/
 
 # Config
 /config.json
