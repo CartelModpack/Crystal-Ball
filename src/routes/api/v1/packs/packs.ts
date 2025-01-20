@@ -6,15 +6,17 @@ import {
   sendAPIResponse,
 } from "../../../../modules/api.js";
 import { db } from "../../../../modules/db.js";
+import { omit } from "../../../../modules/tools.js";
 
 export const apiModpacksV1Route = Router();
 
 /** A modpack. */
 export type Modpack = {
-  slug: string;
   name: string;
-  inherits: string;
+  slug: string;
   version: number;
+  author: string;
+  inherits: string;
   supportedMCVersions: string;
   mods: string;
   resources: string;
@@ -32,9 +34,22 @@ const getModpacks: (version?: string, slug?: string) => Promise<Modpack[]> = (
   version,
   slug,
 ) => {
+  // All but mod files
+  const cols: string[] = [
+    "name",
+    "slug",
+    "version",
+    "author",
+    "inherits",
+    "supportedMCVersions",
+  ];
+
   if (version !== undefined) {
-    return db.table<Modpack>("modpacks").get([], (modpack) => {
-      if (slug !== undefined && (modpack as Modpack).slug !== slug) {
+    return db.table<Modpack>("modpacks").get(cols, (modpack) => {
+      if (
+        slug !== undefined &&
+        !slug.split(",").includes((modpack as Modpack).slug)
+      ) {
         return false;
       }
 
@@ -54,7 +69,15 @@ const getModpacks: (version?: string, slug?: string) => Promise<Modpack[]> = (
     }) as Promise<Modpack[]>;
   }
 
-  return db.table("modpacks").all() as Promise<Modpack[]>;
+  if (slug !== undefined) {
+    return db
+      .table<Modpack>("modpacks")
+      .get(cols, (modpack) =>
+        slug.split(",").includes((modpack as Modpack).slug),
+      ) as Promise<Modpack[]>;
+  }
+
+  return db.table<Modpack>("modpacks").all(...cols) as Promise<Modpack[]>;
 };
 
 /**
@@ -66,8 +89,13 @@ apiModpacksV1Route.post("/modify", (req, res, next) => {
   if (req.auth === null) {
     next(new APIError(401));
   } else {
+    const pack = {
+      ...(req.body as Partial<Modpack>),
+      author: req.auth.user,
+    } as Modpack;
+
     db.table<Modpack>("modpacks")
-      .add(req.body as Modpack)
+      .add(pack)
       .then((modpack) => {
         sendAPIResponse(res, modpack);
       })
@@ -107,6 +135,93 @@ apiModpacksV1Route.delete("/modify", (req, res, next) => {
       })
       .catch(catchAPIError(next));
   }
+});
+
+const mergeArray = (arr1: unknown[], arr2: unknown[]): unknown[] => {
+  const out = arr1;
+
+  for (const itm of arr2) {
+    if (!out.includes(itm)) {
+      out.push(itm);
+    }
+  }
+
+  return out;
+};
+
+const includeInherits = (parent: Modpack, object: Modpack) => {
+  return new Promise<Modpack>((resolve, reject) => {
+    db.table<Modpack>("modpacks")
+      .get(
+        ["slug", "mods", "resources", "shaders", "configs", "inherits"],
+        (row) => (row as Modpack).slug === parent.inherits,
+      )
+      .then((inheritedPack) => {
+        if (inheritedPack.length > 0) {
+          object.mods = mergeArray(
+            object.mods.split(","),
+            inheritedPack[0].mods.split(","),
+          ).join(",");
+          object.resources = mergeArray(
+            object.resources.split(","),
+            inheritedPack[0].resources.split(","),
+          ).join(",");
+          object.shaders = mergeArray(
+            object.shaders.split(","),
+            inheritedPack[0].shaders.split(","),
+          ).join(",");
+          object.configs = mergeArray(
+            object.configs.split(","),
+            inheritedPack[0].configs.split(","),
+          ).join(",");
+
+          if (
+            ((inheritedPack[0] as Modpack).inherits as string | null) === null
+          ) {
+            resolve(object);
+          } else {
+            includeInherits(inheritedPack[0] as Modpack, object)
+              .then(resolve)
+              .catch(reject);
+          }
+        } else {
+          resolve(object);
+        }
+      })
+      .catch(reject);
+  });
+};
+
+/**
+ * GET   /v1/packs/:slug/resources
+ *
+ * Get a modpack on the server.
+ */
+apiModpacksV1Route.get("/:slug/resources", (req, res, next) => {
+  db.table<Modpack>("modpacks")
+    .get(
+      ["slug", "mods", "resources", "shaders", "configs", "inherits"],
+      (row) => (row as Modpack).slug === req.params.slug,
+    )
+    .then((pack) => {
+      console.info(pack);
+      if (pack.length > 0) {
+        if ((pack[0].inherits as string | null) === null) {
+          sendAPIResponse(res, omit(pack[0], "inherits", "slug"));
+        } else {
+          const finalPack = pack[0] as Modpack;
+
+          includeInherits(pack[0] as Modpack, finalPack)
+            .then(() => {
+              sendAPIResponse(res, omit(finalPack, "inherits", "slug"));
+            })
+            .catch(catchAPIError(next));
+        }
+      } else {
+        next(new APIError(404));
+      }
+    })
+    .catch(catchAPIError(next));
 });
 
 /**

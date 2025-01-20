@@ -4,7 +4,10 @@ declare namespace Express {
   interface Request {
     /** User ID number, or null if unauthenticated. */
     auth: {
-      [key: string]: unknown;
+      /** The user account name. */
+      user: string;
+      /** The user account perms. */
+      perms: number;
       /** Time JWT was issued. */
       iat: number;
       /** Time JWT will expire. */

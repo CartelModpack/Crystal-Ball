@@ -11,10 +11,11 @@ console.info("Loading database...");
 const tables: { [key: string]: [{ [key: string]: DataType }, string] } = {
   modpacks: [
     {
-      slug: "string",
       name: "string",
-      inherits: "string",
+      slug: "string",
       version: "int",
+      author: "string",
+      inherits: "string",
       supportedMCVersions: "string",
       mods: "string",
       resources: "string",
@@ -26,6 +27,7 @@ const tables: { [key: string]: [{ [key: string]: DataType }, string] } = {
   auth: [
     {
       username: "string",
+      permissions: "int",
       key: "string",
     },
     "username",
@@ -34,7 +36,11 @@ const tables: { [key: string]: [{ [key: string]: DataType }, string] } = {
 
 // Preloads
 const preloads: { [key: string]: { [key: string]: unknown } | undefined } = {
-  auth: { username: "admin", key: bcrypt.hashSync("admin", 10) },
+  auth: {
+    username: "admin",
+    permissions: 1,
+    key: bcrypt.hashSync("admin", 10),
+  },
 };
 
 const loadDB = async () => {

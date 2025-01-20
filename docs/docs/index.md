@@ -86,7 +86,7 @@ Gets a list of all modpacks in the database, lists the versions that support the
         </tr>
         <tr>
             <td>
-                {!partials/types/modpack.md!lines=1-52}
+                {!partials/types/modpack.md!lines=126-162}
             </td>
         </tr>
 </table>
@@ -108,7 +108,26 @@ Gets a modpack and its data.
 
 #### Response
 
-{!partials/types/modpack.md!lines=1-52}
+{!partials/types/modpack.md!lines=1-57}
+
+///
+
+/// details | `GET /packs/:slug/resources`
+    type: get-request
+
+### ![GET](https://img.shields.io/badge/GET-2b9b46?style=flat-square) [`{!partials/text/api_v1_root.md!}/packs/:slug/resources`]({!partials/text/api_v1_root.md!}/packs/:slug/resources)
+
+Gets all resources a mod would need, including anything inherited.
+
+#### Paramaters
+
+| Paramater | Description |
+| :-------- | :---------- |
+| slug      | The modpack slug |
+
+#### Response
+
+{!partials/types/modpack.md!lines=163-189}
 
 ///
 
@@ -123,11 +142,11 @@ Modify/add a modpack to the database.
 
 #### Body
 
-{!partials/types/modpack.md!lines=53-114}
+{!partials/types/modpack.md!lines=58-125}
 
 #### Response
 
-{!partials/types/modpack.md!lines=1-52}
+{!partials/types/modpack.md!lines=1-57}
 
 ///
 

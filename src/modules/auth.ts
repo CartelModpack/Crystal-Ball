@@ -6,13 +6,19 @@ import { config } from "./config.js";
 
 export type User = {
   username: string;
+  permissions: number;
   key: string;
 };
 
 // JWT
 
-export const generateToken: (username: string) => string = (username) => {
-  return jwt.sign({ user: username }, config().jwt, { expiresIn: "15m" });
+export const generateToken: (user: string, perms: number) => string = (
+  user,
+  perms,
+) => {
+  return jwt.sign({ user, perms }, config().jwt, {
+    expiresIn: "30m",
+  });
 };
 
 export const enforceAuthToken: (
@@ -30,7 +36,13 @@ export const enforceAuthToken: (
   } else {
     jwt.verify(token, config().jwt, {}, (err, data) => {
       if (!err) {
-        req.auth = data as { iat: number; exp: number };
+        req.auth = data as {
+          iat: number;
+          exp: number;
+          user: string;
+          perms: number;
+        };
+        req.auth.perms = Number(req.auth.perms);
       }
       next();
     });
