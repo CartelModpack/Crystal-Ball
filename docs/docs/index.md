@@ -134,11 +134,11 @@ Gets all resources a mod would need, including anything inherited.
 /// details | `POST /packs/modify`
     type: post-request
 
-### ![POST](https://img.shields.io/badge/POST-eecd48?style=flat-square) [`{!partials/text/api_v1_root.md!}/packs/modify`]({!partials/text/api_v1_root.md!}/packs/modify)
+### ![POST](https://img.shields.io/badge/POST-eecd48?style=flat-square) [`{!partials/text/api_v1_root.md!}/packs/create`]({!partials/text/api_v1_root.md!}/packs/create)
 
 > Requires authentication.
 
-Modify/add a modpack to the database.
+Add a modpack to the database.
 
 #### Body
 

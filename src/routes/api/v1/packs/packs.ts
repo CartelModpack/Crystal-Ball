@@ -81,11 +81,11 @@ const getModpacks: (version?: string, slug?: string) => Promise<Modpack[]> = (
 };
 
 /**
- * POST  /v1/packs/modify
+ * POST  /v1/packs/create
  *
- * Modify/adds a modpack to the server.
+ * Adds a modpack to the server.
  */
-apiModpacksV1Route.post("/modify", (req, res, next) => {
+apiModpacksV1Route.post("/create", (req, res, next) => {
   if (req.auth === null) {
     next(new APIError(401));
   } else {
@@ -104,14 +104,16 @@ apiModpacksV1Route.post("/modify", (req, res, next) => {
 });
 
 /**
- * DELETE  /v1/packs/modify
+ * DELETE  /v1/packs/delete
  *
  * Removes a modpack to the server.
  */
-apiModpacksV1Route.delete("/modify", (req, res, next) => {
-  if (req.auth === null) {
-    next(new APIError(401));
-  } else {
+apiModpacksV1Route.delete("/delete", (req, res, next) => {
+  if (
+    req.auth &&
+    ((req.body as { slug: string }).slug === req.auth.user ||
+      req.auth.perms === 1)
+  ) {
     db.table<Modpack>("modpacks")
       .get(
         [],
@@ -134,6 +136,8 @@ apiModpacksV1Route.delete("/modify", (req, res, next) => {
         }
       })
       .catch(catchAPIError(next));
+  } else {
+    next(new APIError(401));
   }
 });
 
