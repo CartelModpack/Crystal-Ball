@@ -141,7 +141,7 @@ apiAuthV1Route.delete("/delete", (req, res, next) => {
               })
               .catch(catchAPIError);
           } else {
-            next(new APIError(400, "User doesn't exist."));
+            next(new APIError(404, "User doesn't exist."));
           }
         })
         .catch(catchAPIError);
