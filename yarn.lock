@@ -318,6 +318,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@iarna/toml@npm:^2.2.5":
+  version: 2.2.5
+  resolution: "@iarna/toml@npm:2.2.5"
+  checksum: 10c0/d095381ad4554aca233b7cf5a91f243ef619e5e15efd3157bc640feac320545450d14b394aebbf6f02a2047437ced778ae598d5879a995441ab7b6c0b2c2f201
+  languageName: node
+  linkType: hard
+
 "@isaacs/cliui@npm:^8.0.2":
   version: 8.0.2
   resolution: "@isaacs/cliui@npm:8.0.2"
@@ -1801,6 +1808,7 @@ __metadata:
   dependencies:
     "@gavinhsmith/shutdown": "npm:^1.1.7"
     "@gavinhsmith/simpledb": "npm:^1.2.2"
+    "@iarna/toml": "npm:^2.2.5"
     "@types/bcrypt": "npm:^5"
     "@types/express": "npm:^5.0.0"
     "@types/jsonwebtoken": "npm:^9"
