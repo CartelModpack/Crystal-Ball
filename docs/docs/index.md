@@ -212,8 +212,6 @@ Delete a modpack from the database.
 
 #### Body
 
-#### Body
-
 | Key      |   Type   | Required | Explanation               |
 | :------- | :------: | :------: | :------------------------ |
 | slug | `string` |   Yes    | The slug of the mod to delete. |
