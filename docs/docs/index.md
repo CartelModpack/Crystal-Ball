@@ -58,7 +58,58 @@ Issue a token to access uploading modpacks, etc.
 
 | Key   |   Type   | Value                                                                               |
 | :---- | :------: | :---------------------------------------------------------------------------------- |
-| token | `string` | A JWT Bearer token to be used in the authorization header. Is valid for 15 minutes. |
+| token | `string` | A JWT Bearer token to be used in the authorization header. Is valid for 30 minutes. |
+
+///
+
+/// details | `POST /auth/register`
+    type: post-request
+
+### ![POST](https://img.shields.io/badge/POST-eecd48?style=flat-square) [`{!partials/text/api_v1_root.md!}/auth/register`]({!partials/text/api_v1_root.md!}/auth/register)
+
+> Requires Authentication - Level 1
+
+Create a new account on the server and issue a token for it.
+
+{!partials/alerts/admin_acc.md!}
+
+#### Body
+
+| Key      |   Type   | Required | Explanation               |
+| :------- | :------: | :------: | :------------------------ |
+| username | `string` |   Yes    | The username of the user. |
+| password | `string` |   Yes    | The password of the user. |
+| permission | `number` | Yes | The users permission level, 0 (regular) or 1 (operator) |
+
+#### Response
+
+| Key   |   Type   | Value                                                                               |
+| :---- | :------: | :---------------------------------------------------------------------------------- |
+| token | `string` | A JWT Bearer token to be used in the authorization header. Is valid for 30 minutes. |
+
+///
+
+/// details | `DELETE /auth/register`
+    type: delete-request
+
+### ![DELETE](https://img.shields.io/badge/DELETE-ea3d3d?style=flat-square) [`{!partials/text/api_v1_root.md!}/auth/delete`]({!partials/text/api_v1_root.md!}/auth/delete)
+
+> Requires Authentication - Level 1
+
+Deletes an account from the server.
+
+#### Body
+
+| Key      |   Type   | Required | Explanation               |
+| :------- | :------: | :------: | :------------------------ |
+| username | `string` |   Yes    | The username of the user. |
+
+#### Response
+
+| Key      |   Type   | Explanation               |
+| :------- | :------: | :------------------------ |
+| status   |   `200`  | The status of the request. If anything but 200 a failure occured. |
+| message  | `string` | An attached message. |
 
 ///
 
@@ -131,12 +182,12 @@ Gets all resources a mod would need, including anything inherited.
 
 ///
 
-/// details | `POST /packs/modify`
+/// details | `POST /packs/create`
     type: post-request
 
 ### ![POST](https://img.shields.io/badge/POST-eecd48?style=flat-square) [`{!partials/text/api_v1_root.md!}/packs/create`]({!partials/text/api_v1_root.md!}/packs/create)
 
-> Requires authentication.
+> Requires Authentication - Level 0
 
 Add a modpack to the database.
 
@@ -150,12 +201,12 @@ Add a modpack to the database.
 
 ///
 
-/// details | `DELETE /packs/modify`
+/// details | `DELETE /packs/delete`
     type: delete-request
 
-### ![DELETE](https://img.shields.io/badge/DELETE-ea3d3d?style=flat-square) [`{!partials/text/api_v1_root.md!}/packs/modify`]({!partials/text/api_v1_root.md!}/packs/modify)
+### ![DELETE](https://img.shields.io/badge/DELETE-ea3d3d?style=flat-square) [`{!partials/text/api_v1_root.md!}/packs/delete`]({!partials/text/api_v1_root.md!}/packs/delete)
 
-> Requires authentication.
+> Requires Authentication - Level 0 for modpacks owned by the user, Level 1 for all modpacks.
 
 Delete a modpack from the database.
 
