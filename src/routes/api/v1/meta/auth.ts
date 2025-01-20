@@ -113,7 +113,12 @@ apiAuthV1Route.post("/register", (req, res, next) => {
 apiAuthV1Route.delete("/delete", (req, res, next) => {
   if (req.auth) {
     if (req.auth.perms === 1) {
-      console.info(req.auth.perms);
+      if (req.auth.user === (req.body as { username: string }).username) {
+        next(new APIError(400, "Can't delete own account."));
+
+        return;
+      }
+
       db.table<User>("auth")
         .get(
           ["username"],
