@@ -1,4 +1,4 @@
 // Import promise to initiate it's overrides.
-import "../promise";
+import "./lib/promise";
 
-export { exec, execAll } from "./exec";
+export { exec, execAll } from "./lib/exec";
