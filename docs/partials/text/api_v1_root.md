@@ -1,1 +1,0 @@
-{!partials/text/host.md!}/api/v1

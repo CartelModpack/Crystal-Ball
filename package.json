@@ -1,58 +1,36 @@
 {
   "name": "crystal-ball",
   "version": "0.1.0",
-  "description": "N/A",
-  "main": "./bin/app.js",
-  "bin": {
-    "crystal-ball-app": "./bin/app.js"
-  },
-  "repository": "",
+  "description": "CLI Tool to manage modpacks using JSON files and packwiz.",
+  "bin": "./bin/cli/index.js",
+  "repository": "https://github.com/gavinhsmith/Crystal-Ball",
   "author": "gavinhsmith <me@gavinhsmith.com> (https://gavinhsmith.com)",
   "license": "GPL-3.0",
   "private": true,
-  "type": "module",
   "packageManager": "yarn@4.6.0",
   "packwiz": {
     "tool": "0626c00149a8d9a5e9f76e5640e7b8b95c064350",
     "format": "1.1.0"
   },
-  "dependencies": {
-    "@gavinhsmith/shutdown": "^1.1.7",
-    "@gavinhsmith/simpledb": "^1.2.2",
-    "@iarna/toml": "^2.2.5",
-    "bcrypt": "^5.1.1",
-    "commander": "^13.0.0",
-    "express": "^4.21.2",
-    "jsonwebtoken": "^9.0.2",
-    "semver": "^7.6.3"
-  },
   "devDependencies": {
-    "@types/bcrypt": "^5",
-    "@types/express": "^5.0.0",
-    "@types/jsonwebtoken": "^9",
     "@types/node": "^22.10.5",
     "@types/semver": "^7.5.8",
     "eslint": "^9.18.0",
     "eslint-config-sheriff": "^25.6.0",
     "jiti": "^2.4.2",
-    "nodemon": "^3.1.9",
     "npm-run-all": "^4.1.5",
     "prettier": "^3.4.2",
     "rimraf": "^6.0.1",
     "typescript": "^5.7.3"
   },
   "scripts": {
-    "clean": "rimraf ./bin ./site ./data.db ./config.json",
+    "clean": "rimraf ./dist",
     "lint": "eslint",
-    "compile:app": "tsc",
-    "compile:docs": "mkdocs build",
-    "build": "npm-run-all clean lint compile:app compile:docs --print-label",
-    "start": "node .",
-    "dev:compile:app": "tsc --watch",
-    "dev:docs": "mkdocs serve -a 0.0.0.0:8081",
-    "dev:server": "nodemon . --dev --dev-docs-port 8081",
-    "dev": "npm-run-all clean lint --parallel dev:server dev:compile:app dev:docs",
-    "scripts:packwiz": "rimraf ./lib/packwiz && node ./scripts/install_packwiz.js",
-    "postinstall": "npm-run-all scripts:packwiz --print-label"
+    "compile": "tsc",
+    "build": "npm-run-all clean lint compile --print-label",
+    "dev": "node ./dist/cli/index.js"
+  },
+  "dependencies": {
+    "commander": "^13.1.0"
   }
 }

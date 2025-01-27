@@ -3,22 +3,12 @@
     "strict": true,
 
     "rootDir": "./src",
-    "outDir": "./bin",
+    "outDir": "./dist",
 
-    "module": "ESNext",
-    "target": "ESNext",
-    "moduleResolution": "bundler",
-    "esModuleInterop": true,
     "resolveJsonModule": true,
-    "allowJs": true,
-
     "pretty": true,
 
-    "types": ["./src/types/auth.d.ts"],
-    "paths": {
-      "undici-types": ["./node_modules/undici-types/index.d.ts"],
-      "commander": ["./node_modules/commander/typings/index.d.ts"]
-    }
+    "typeRoots": ["./src/types", "./node_modules/@types"]
   },
-  "include": ["./src"]
+  "include": ["./src/**/*.ts"]
 }

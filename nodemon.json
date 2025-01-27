@@ -1,4 +1,0 @@
-{
-  "extensions": ["js"],
-  "watch": ["./bin/**/*"]
-}

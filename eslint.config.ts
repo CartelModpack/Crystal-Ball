@@ -25,7 +25,7 @@ export default [
   },
   ...tseslint.config(sheriff(sheriffOptions), {
     rules: {
-      "@typescript-eslint/consistent-type-definitions": ["error", "type"],
+      "@typescript-eslint/consistent-type-definitions": ["error", "interface"],
       "@typescript-eslint/switch-exhaustiveness-check": [
         "error",
         {
@@ -43,16 +43,8 @@ export default [
         },
         {
           selector: "variable",
-          format: ["camelCase", "PascalCase"],
+          format: ["camelCase", "PascalCase", "UPPER_CASE"],
           modifiers: ["const"],
-          leadingUnderscore: "forbid",
-          trailingUnderscore: "forbid",
-        },
-        {
-          selector: "variable",
-          format: ["camelCase", "UPPER_CASE"],
-          modifiers: ["const"],
-          types: ["string", "number"],
           leadingUnderscore: "forbid",
           trailingUnderscore: "forbid",
         },
@@ -86,7 +78,7 @@ export default [
           trailingUnderscore: "forbid",
         },
       ],
-      "jsdoc/require-description-complete-sentence": "off",
+      "jsdoc/require-description-complete-sentence": "error",
       "no-restricted-syntax": [
         "error",
         {
