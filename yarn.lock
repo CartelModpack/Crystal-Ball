@@ -1204,6 +1204,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"consola@npm:^3.4.0":
+  version: 3.4.0
+  resolution: "consola@npm:3.4.0"
+  checksum: 10c0/bc7f7ad46514375109a80f3ae8330097eb1e5d89232a24eb830f3ac383e22036a62c53d33561cd73d7cda4b3691fba85e3dcf35229ef7721b324aae291ceb40c
+  languageName: node
+  linkType: hard
+
 "core-js-compat@npm:^3.37.0":
   version: 3.40.0
   resolution: "core-js-compat@npm:3.40.0"
@@ -1244,6 +1251,7 @@ __metadata:
     "@types/node": "npm:^22.10.5"
     "@types/semver": "npm:^7.5.8"
     commander: "npm:^13.1.0"
+    consola: "npm:^3.4.0"
     eslint: "npm:^9.18.0"
     eslint-config-sheriff: "npm:^25.6.0"
     jiti: "npm:^2.4.2"

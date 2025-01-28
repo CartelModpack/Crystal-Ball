@@ -2,11 +2,13 @@
   "compilerOptions": {
     "strict": true,
 
+    "lib": ["ESNext"],
+
     "rootDir": "./src",
     "outDir": "./dist",
 
-    "resolveJsonModule": true,
     "pretty": true,
+    "resolveJsonModule": true,
     "removeComments": true,
 
     "typeRoots": ["./src/types", "./node_modules/@types"]

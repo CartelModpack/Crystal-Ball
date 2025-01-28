@@ -134,4 +134,5 @@ out
 
 # Test Files
 /test/
-project.json
+pack.json
+/variants/

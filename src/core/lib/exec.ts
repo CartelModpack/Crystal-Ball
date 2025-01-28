@@ -1,3 +1,5 @@
+// Import promise to initiate it's overrides. We can do this here as its where its mainly used.
+import "./lib/promise";
 import { spawn } from "node:child_process";
 
 /** The result of an executed command. */
