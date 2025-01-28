@@ -134,5 +134,6 @@ out
 
 # Test Files
 /test/
+/temp/
 pack.json
 /variants/

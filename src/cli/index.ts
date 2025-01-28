@@ -126,6 +126,7 @@ program
                   resources: [],
                 };
 
+                // Save main pack variant.
                 writeFile(
                   join(cwd, "./packs/main.json"),
                   JSON.stringify(mainPackVariant, null, 2),
@@ -149,6 +150,8 @@ program
         consola.error(error);
       });
   });
+
+// build CLI command
 
 // Init Commander
 program.parse();
