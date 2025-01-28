@@ -39,13 +39,13 @@ export const initCommand = new Command("init")
     "The author of the pack. If left blank will be defined interactively.",
   )
   .option(
-    "--slug <string>",
+    "-s, --slug <string>",
     "The slug ID of the pack. If left blank will be derived from the name.",
   )
-  .action((path: string | null, cliOpts: Partial<InitCLIConfig>) => {
+  .action((path: string | undefined, cliOpts: Partial<InitCLIConfig>) => {
     // Get the "cwd" of the new project.
     const cwd: string =
-      path === null ? process.cwd() : join(process.cwd(), path);
+      path === undefined ? process.cwd() : join(process.cwd(), path);
 
     // Make the directory if it doesn't already exist.
     mkdir(join(cwd, "./packs"), { recursive: true })

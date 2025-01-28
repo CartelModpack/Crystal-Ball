@@ -27,7 +27,7 @@ export const getPackVariantFilePath = (slug: string): string =>
 // Commands
 
 // init CLI
-program.addCommand(initCommand);
+program.addCommand(initCommand, { isDefault: true });
 
 // compile CLI
 program.addCommand(compileCommand);

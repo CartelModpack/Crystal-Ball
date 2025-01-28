@@ -10,8 +10,8 @@ interface PackManifest {
   author: string;
   /** The pack's current version. Should be semver compatible. */
   version: string;
-  /** The main variant of the pack. */
-  main: string;
+  /** The main variant of the pack. If `null`, no main variant is specifed. */
+  main: string | null;
   /** An object storing the slug and filepath of variants. */
   variants: { [key: string]: string };
 }

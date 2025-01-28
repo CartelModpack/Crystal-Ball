@@ -11,8 +11,10 @@ const compilePackFromManifest: (
   packManifest: PackManifest,
 ) => Promise<void> = (variant, packManifest) => {
   return new Promise((resolve, reject) => {
+    const displayName = `${packManifest.name} [${variant.name}]`;
+
     const commands: string[] = [
-      `${PACKWIZ_EXEC} init --author "${packManifest.author}" --fabric-latest -l --name "${packManifest.name}" --version "${packManifest.version}" -r --modloader fabric -y`,
+      `${PACKWIZ_EXEC} init --author "${packManifest.author}" --fabric-latest -l --name "${packManifest.main === variant.slug ? packManifest.name : displayName}" --version "${packManifest.version}" -r --modloader fabric -y`,
     ];
 
     const postCommands: string[] = [];
