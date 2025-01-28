@@ -130,10 +130,11 @@ out
 
 # Build Files
 /dist/
+/bin/
 /lib/
 
 # Test Files
 /test/
 /temp/
+/packs/
 pack.json
-/variants/

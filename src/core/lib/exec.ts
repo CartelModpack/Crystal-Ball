@@ -1,5 +1,5 @@
 // Import promise to initiate it's overrides. We can do this here as its where its mainly used.
-import "./lib/promise";
+import "./promise";
 import { spawn } from "node:child_process";
 
 /** The result of an executed command. */
@@ -115,13 +115,9 @@ export const execAll: (
   const { type }: MultiExecConfig = { ...DEFAULT_MULTI_CONFIG, ...config };
 
   return new Promise((resolve, reject) => {
-    const execs: PromiseExecutor<ExecResult, ExecResult>[] = [];
-
-    for (const cmd of commands) {
-      execs.push(createCommandExecutor(cmd, config));
-    }
-
-    Promise[type === "at-once" ? "atOnce" : "inOrder"](execs)
+    Promise[type === "at-once" ? "atOnce" : "inOrder"](
+      commands.map((cmd) => createCommandExecutor(cmd, config)),
+    )
       .then(resolve)
       .catch(reject);
   });

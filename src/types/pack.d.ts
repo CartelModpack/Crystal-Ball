@@ -35,6 +35,8 @@ interface PackResourceFile extends PackResourceBase {
   source: "file";
   /** The URL to the file. */
   url: string;
+  /** The Name of the resource. */
+  name: string;
 }
 
 /** A resource for the modpack. */

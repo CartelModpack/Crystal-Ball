@@ -43,12 +43,9 @@ Promise.atOnce = <T, R = Error>(
     if (executors.length === 0) {
       resolve([]);
     } else {
-      const promises: Promise<T>[] = [];
-
-      for (const executor of executors) {
-        promises.push(new Promise(executor));
-      }
-      Promise.all(promises).then(resolve).catch(reject);
+      Promise.all(executors.map((exec) => new Promise(exec)))
+        .then(resolve)
+        .catch(reject);
     }
   });
 };

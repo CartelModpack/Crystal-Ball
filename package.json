@@ -24,11 +24,12 @@
     "typescript": "^5.7.3"
   },
   "scripts": {
-    "clean": "rimraf ./dist ./test ./pack.json ./packs",
+    "clean": "rimraf ./dist ./bin ./test ./pack.json ./packs",
     "lint": "eslint",
     "compile": "tsc",
     "build": "npm-run-all clean lint compile --print-label",
-    "dev": "node ./dist/cli/index.js"
+    "dev": "node --trace-warnings ./dist/cli/index.js",
+    "script:packwiz": "node ./scripts/install_packwiz.js"
   },
   "dependencies": {
     "commander": "^13.1.0",
