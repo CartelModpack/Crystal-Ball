@@ -13,13 +13,16 @@ export const compileCommand = new Command("compile")
     "The variant of the modpack to build. If left blank will build all variants avaliable.",
   )
   .action((variant: string | undefined) => {
-    consola.start("Compiling to packwiz...");
     getPackManifest()
       .then((packManifest) => {
+        if (variant && !packManifest.variants.includes(variant)) {
+          throw new Error(`No variant called "${variant}" in pack.`);
+        }
+
+        consola.start("Compiling to packwiz...");
+
         packwizCompilePacks(
-          variant
-            ? [packManifest.variants[variant]]
-            : Object.values(packManifest.variants),
+          variant ? [variant] : packManifest.variants,
           packManifest,
         )
           .then(() => {

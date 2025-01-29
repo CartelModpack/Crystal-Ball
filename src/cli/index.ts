@@ -2,6 +2,7 @@
 
 import { program } from "commander";
 import { description, name, version } from "../../package.json";
+import { addCommand } from "./commands/add";
 import { compileCommand } from "./commands/compile";
 import { initCommand } from "./commands/init";
 
@@ -31,6 +32,9 @@ program.addCommand(initCommand, { isDefault: true });
 
 // compile CLI
 program.addCommand(compileCommand);
+
+// add CLI
+program.addCommand(addCommand);
 
 // Init Commander
 program.parse();

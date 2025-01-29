@@ -92,9 +92,7 @@ export const initCommand = new Command("init")
             packManifest.author = opts.author;
             packManifest.version = opts.version;
             packManifest.main = "main";
-            packManifest.variants = {
-              main: "./packs/main.json",
-            };
+            packManifest.variants = ["main"];
 
             // Save pack manifest
             writeFile(

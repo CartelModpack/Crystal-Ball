@@ -12,16 +12,18 @@ interface PackManifest {
   version: string;
   /** The main variant of the pack. If `null`, no main variant is specifed. */
   main: string | null;
-  /** An object storing the slug and filepath of variants. */
-  variants: { [key: string]: string };
+  /** A list storing the slug of all variants. */
+  variants: string[];
 }
 
 /** A basic pack resource. */
 interface PackResourceBase {
   /** The source of the resource. */
-  source: "modrinth" | "curseforge" | "file";
+  source: "modrinth" | "curseforge" | "url";
   /** The type of resource. */
   type: "mods" | "resourcepacks" | "shaderpacks" | "config";
+  /** The name of the resource. */
+  name: string;
 }
 
 /** A pack resource from a distribution server (like modrinth, curseforge, etc). */
@@ -32,11 +34,9 @@ interface PackResourceModDistro extends PackResourceBase {
 }
 /** A pack resource from a file on the web. */
 interface PackResourceFile extends PackResourceBase {
-  source: "file";
+  source: "url";
   /** The URL to the file. */
   url: string;
-  /** The Name of the resource. */
-  name: string;
 }
 
 /** A resource for the modpack. */

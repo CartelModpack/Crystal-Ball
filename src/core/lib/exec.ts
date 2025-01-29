@@ -88,6 +88,21 @@ const createCommandExecutor: (
 };
 
 /**
+ * Cleans a peice of data and returns a a string that can be directly inserted as a CLI argument.
+ *
+ * @param data - The primative data to convert.
+ */
+export const arg: (data: string | number | boolean | null) => string = (
+  data,
+) => {
+  if (typeof data === "string") {
+    return `"${data}"`;
+  }
+
+  return String(data);
+};
+
+/**
  * Executes a command.
  *
  * @param command - The command to execute.
