@@ -36,16 +36,17 @@ const generatePackwizCommand: (command: string, path: string) => string = (
 /** Helper function to compile a pack from a variant manifest. */
 const compilePackFromManifest: (
   variant: PackVariantManifest,
+  targets: string[],
   packManifest: PackManifest,
   config?: Partial<PackwizExecConfig>,
-) => Promise<void> = async (variant, packManifest, conf) => {
+) => Promise<void> = async (variant, targets, packManifest, conf) => {
   const { packwizPath, cwd } = buildConfig(conf ?? {});
 
   await new Promise<void>((resolve, reject) => {
     const displayName = `${packManifest.name} [${variant.name}]`;
 
     Promise.all(
-      packManifest.targets.map((target) => {
+      targets.map((target) => {
         return new Promise<void>((resolve, reject) => {
           const commands: string[] = [
             generatePackwizCommand(
@@ -107,21 +108,22 @@ const compilePackFromManifest: (
 /**
  * Compile packs variants from the file path.
  *
- * @param variants - The list of file paths.
+ * @param variants - The list of variant slugs.
+ * @param targets - The list of targets.
  * @param packManifest - The pack manifest.
  * @returns A promise that resolves when all packs specifed are built.
  */
 export const packwizCompilePacks: (
   variants: string[],
+  targets: string[],
   packManifest: PackManifest,
-  config?: Partial<FSConfig>,
-) => Promise<void> = async (variants, packManifest) => {
+) => Promise<void> = async (variants, targets, packManifest) => {
   await new Promise<void>((resolve, reject) => {
     Promise.all(variants.map((variant) => getPackVarientFromSlug(variant)))
       .then((variantManifests) => {
         Promise.all(
           variantManifests.map((varManifest) =>
-            compilePackFromManifest(varManifest, packManifest),
+            compilePackFromManifest(varManifest, targets, packManifest),
           ),
         )
           .then(() => {

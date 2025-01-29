@@ -67,7 +67,7 @@ export const initCommand = new Command("init")
   )
   .option(
     "-t, --targets <string[]>",
-    "A CSV list of game versions to compile to. If left blank will defined interactively. Defaults to the latest version of Minecraft supported by Fabric.",
+    "A list of game versions to compile to. If left blank will defined interactively. Defaults to the latest version of Minecraft supported by Fabric.",
   )
   .option(
     "-s, --slug <string>",
