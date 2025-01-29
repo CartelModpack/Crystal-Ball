@@ -35,6 +35,7 @@
   },
   "dependencies": {
     "commander": "^13.1.0",
-    "consola": "^3.4.0"
+    "consola": "^3.4.0",
+    "fast-json": "^3.0.0"
   }
 }

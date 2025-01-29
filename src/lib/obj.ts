@@ -12,7 +12,7 @@ export const stackObjects: <T extends object>(
   let out: T = base;
 
   objs.forEach((obj) => {
-    out = { ...out, obj };
+    out = { ...out, ...obj };
   });
 
   return out;

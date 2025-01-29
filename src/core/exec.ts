@@ -1,7 +1,7 @@
 import { mkdir } from "node:fs/promises";
 import { join } from "node:path";
-import { arg, execAll } from "./lib/exec";
-import { stackObjects } from "./lib/obj";
+import { arg, execAll } from "../lib/exec";
+import { stackObjects } from "../lib/obj";
 import { getPackVarientFromSlug } from "./pack";
 
 /** Config for executing packwiz commands. */
@@ -44,51 +44,61 @@ const compilePackFromManifest: (
   await new Promise<void>((resolve, reject) => {
     const displayName = `${packManifest.name} [${variant.name}]`;
 
-    const commands: string[] = [
-      generatePackwizCommand(
-        `init --author ${arg(packManifest.author)} --fabric-latest -l --name ${arg(packManifest.main === variant.slug ? packManifest.name : displayName)} --version ${arg(packManifest.version)} -r --modloader fabric -y`,
-        packwizPath,
-      ),
-    ];
+    Promise.all(
+      packManifest.targets.map((target) => {
+        return new Promise<void>((resolve, reject) => {
+          const commands: string[] = [
+            generatePackwizCommand(
+              `init --author ${arg(packManifest.author)} --mc-version ${arg(target)} --fabric-latest --name ${arg(packManifest.main === variant.slug ? packManifest.name : displayName)} --version ${arg(packManifest.version)} -r --modloader fabric -y`,
+              packwizPath,
+            ),
+          ];
 
-    const postCommands: string[] = [];
+          const postCommands: string[] = [];
 
-    for (const resource of variant.resources) {
-      let cmd: string;
+          for (const resource of variant.resources) {
+            let cmd: string;
 
-      if (resource.source === "url") {
-        cmd = generatePackwizCommand(
-          `${resource.source} add ${arg(resource.name)} ${arg(resource.url)} --meta-folder ${arg(resource.type)}`,
-          packwizPath,
-        );
-      } else {
-        cmd = generatePackwizCommand(
-          `${resource.source} add ${arg(resource.id)} --meta-folder ${arg(resource.type)}`,
-          packwizPath,
-        );
-      }
+            if (resource.source === "url") {
+              cmd = generatePackwizCommand(
+                `${resource.source} add ${arg(resource.name)} ${arg(resource.url)} --meta-folder ${arg(resource.type)}`,
+                packwizPath,
+              );
+            } else {
+              cmd = generatePackwizCommand(
+                `${resource.source} add ${arg(resource.id)} --meta-folder ${arg(resource.type)}`,
+                packwizPath,
+              );
+            }
 
-      commands.push(cmd);
-    }
+            commands.push(cmd);
+          }
 
-    commands.push(
-      ...postCommands,
-      generatePackwizCommand("refresh", packwizPath),
-    );
+          commands.push(
+            ...postCommands,
+            generatePackwizCommand("refresh", packwizPath),
+          );
 
-    const binDir = join(cwd, "./bin", variant.slug);
+          const binDir = join(cwd, "./bin", target, variant.slug);
 
-    mkdir(binDir, { recursive: true })
+          mkdir(binDir, { recursive: true })
+            .then(() => {
+              execAll(commands, {
+                type: "in-order",
+                shouldRejectIfNotZero: true,
+                cwd: binDir,
+              })
+                .then(() => {
+                  resolve();
+                })
+                .catch(reject);
+            })
+            .catch(reject);
+        });
+      }),
+    )
       .then(() => {
-        execAll(commands, {
-          type: "in-order",
-          shouldRejectIfNotZero: true,
-          cwd: binDir,
-        })
-          .then(() => {
-            resolve();
-          })
-          .catch(reject);
+        resolve();
       })
       .catch(reject);
   });

@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { stackObjects } from "./lib/obj";
+import { stackObjects } from "../lib/obj";
 
 export const PACK_MANIFEST_FILE = "./pack.json";
 export const PACK_VARIANT_DIR = "./packs";

@@ -10,6 +10,8 @@ interface PackManifest {
   author: string;
   /** The pack's current version. Should be semver compatible. */
   version: string;
+  /** A list of game versions to build for. */
+  targets: string[];
   /** The main variant of the pack. If `null`, no main variant is specifed. */
   main: string | null;
   /** A list storing the slug of all variants. */

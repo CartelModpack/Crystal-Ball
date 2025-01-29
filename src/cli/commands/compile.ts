@@ -12,6 +12,10 @@ export const compileCommand = new Command("compile")
     "[variant]",
     "The variant of the modpack to build. If left blank will build all variants avaliable.",
   )
+  .option(
+    "-t, --targets <string>",
+    "A CSV list of target game versions to build for. If left blank will use the targets specified in pack.json.",
+  )
   .action((variant: string | undefined) => {
     getPackManifest()
       .then((packManifest) => {

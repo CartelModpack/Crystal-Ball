@@ -1254,6 +1254,7 @@ __metadata:
     consola: "npm:^3.4.0"
     eslint: "npm:^9.18.0"
     eslint-config-sheriff: "npm:^25.6.0"
+    fast-json: "npm:^3.0.0"
     jiti: "npm:^2.4.2"
     npm-run-all: "npm:^4.1.5"
     prettier: "npm:^3.4.2"
@@ -2342,6 +2343,13 @@ __metadata:
   version: 2.1.0
   resolution: "fast-json-stable-stringify@npm:2.1.0"
   checksum: 10c0/7f081eb0b8a64e0057b3bb03f974b3ef00135fbf36c1c710895cd9300f13c94ba809bb3a81cf4e1b03f6e5285610a61abbd7602d0652de423144dfee5a389c9b
+  languageName: node
+  linkType: hard
+
+"fast-json@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "fast-json@npm:3.0.0"
+  checksum: 10c0/e314ecb9ad9bf5dfe05cad8ae93d3329a98f79184094e3bd032741734b015525f053d90c0b9d0d40abc702252377099177f74ab7c4f9c806a9159940ae0bbc5c
   languageName: node
   linkType: hard
 
