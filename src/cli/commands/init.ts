@@ -150,7 +150,11 @@ export const initCommand = new Command("init")
           process.exit(1);
         }
       } else {
-        opts[key] = (cliOpts[key] as unknown as string[]).join(",");
+        if (Array.isArray(cliOpts[key])) {
+          opts[key] = cliOpts[key].join(",");
+        } else {
+          opts[key] = cliOpts[key];
+        }
       }
     }
 
