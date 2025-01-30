@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { program } from "commander";
+import { consola } from "consola";
 import { description, name, version } from "../../package.json";
 import { addCommand } from "./commands/add";
 import { compileCommand } from "./commands/compile";
@@ -35,6 +36,22 @@ program.addCommand(compileCommand);
 
 // add CLI
 program.addCommand(addCommand);
+
+// Pretty print errors
+
+const displayUncaughtErrors = (cause: Error) => {
+  consola.error(
+    new Error(
+      "An unexpected exception occured, and we don't know how to handle it.",
+      {
+        cause,
+      },
+    ),
+  );
+};
+
+process.on("uncaughtException", displayUncaughtErrors);
+process.on("unhandledRejection", displayUncaughtErrors);
 
 // Init Commander
 program.parse();

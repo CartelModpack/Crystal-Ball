@@ -66,7 +66,7 @@ export const initCommand = new Command("init")
     "The author of the pack. If left blank will be defined interactively.",
   )
   .option(
-    "-t, --targets <string[]>",
+    "-t, --targets <string...>",
     "A list of game versions to compile to. If left blank will defined interactively. Defaults to the latest version of Minecraft supported by Fabric.",
   )
   .option(
@@ -127,12 +127,22 @@ export const initCommand = new Command("init")
         const defaultValStr = ` [${defaultVal ?? ""}]`;
 
         try {
-          opts[key] = await prompt(
+          opts[key] = (await prompt(
             `${key === "author" ? "Who" : "What"} is the modpack's ${key}${defaultVal ? defaultValStr : ""}:`,
             {
+              retries: -1,
               default: defaultVal,
+              postprocess: async (val): Promise<string> => {
+                return await new Promise((resolve, reject) => {
+                  if (val === undefined) {
+                    reject(new Error(`Modpack must have ${key}.`));
+                  } else {
+                    resolve(val);
+                  }
+                });
+              },
             },
-          );
+          )) as string;
 
           opts[key] = opts[key].trim();
         } catch (error) {
@@ -140,7 +150,7 @@ export const initCommand = new Command("init")
           process.exit(1);
         }
       } else {
-        opts[key] = cliOpts[key];
+        opts[key] = (cliOpts[key] as unknown as string[]).join(",");
       }
     }
 
@@ -154,11 +164,11 @@ export const initCommand = new Command("init")
     packManifest.description = opts.description;
     packManifest.author = opts.author;
     packManifest.version = opts.version;
+    packManifest.main = "main";
+    packManifest.variants = ["main"];
     packManifest.targets = opts.targets?.replaceAll(" ", "").split(",") ?? [
       latestFabricMcVers ?? "N/A",
     ];
-    packManifest.main = "main";
-    packManifest.variants = ["main"];
 
     if (!cliOpts.dryRun) {
       // Create pack.json

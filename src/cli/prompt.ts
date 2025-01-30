@@ -3,7 +3,7 @@ import { stackObjects } from "../lib/obj";
 
 interface PromptConfig {
   default: (() => Promise<string>) | string | undefined;
-  verifier: ((value: string) => Promise<string>) | undefined;
+  postprocess: ((value: string | undefined) => Promise<string>) | undefined;
   retries: number;
 }
 
@@ -45,14 +45,14 @@ const promptRecursively: (
         default: config.default,
       })
       .then((val) => {
-        if (config.verifier) {
+        if (config.postprocess) {
           config
-            .verifier(val)
+            .postprocess(val)
             .then((cleaned) => {
               resolve(cleaned.trim());
             })
             .catch((error: Error) => {
-              if (config.retries > attempt) {
+              if (config.retries <= attempt) {
                 consola.warn(error.message);
                 promptRecursively(query, config, attempt + 1)
                   .then(resolve)
@@ -79,13 +79,13 @@ const promptRecursively: (
 export const prompt: (
   query: string,
   config?: Partial<PromptConfig>,
-) => Promise<string> = async (query, conf) => {
+) => Promise<unknown> = async (query, conf) => {
   return await new Promise((resolve, reject) => {
     processConfig(
       stackObjects(
         {
           default: undefined,
-          verifier: undefined,
+          postprocess: undefined,
           retries: 0,
         },
         conf ?? {},
