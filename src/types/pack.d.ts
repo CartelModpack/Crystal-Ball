@@ -18,12 +18,15 @@ interface PackManifest {
   variants: string[];
 }
 
+/** The type of pack resource. */
+type PackResourceType = "mod" | "resourcepack" | "shader" | "config";
+
 /** A basic pack resource. */
 interface PackResourceBase {
   /** The source of the resource. */
   source: "modrinth" | "curseforge" | "url";
   /** The type of resource. */
-  type: "mods" | "resourcepacks" | "shaderpacks" | "config";
+  type: PackResourceType;
   /** The name of the resource. */
   name: string;
 }

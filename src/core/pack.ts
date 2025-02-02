@@ -208,7 +208,7 @@ export interface Modpack {
    * @param slug - The slug id of the variant.
    * @returns The modpack variant instance, or `null` if it is not in this pack.
    */
-  getVariant: (slug: string) => ModpackVariant | null;
+  getVariant: (slug: string | null) => ModpackVariant | null;
   /**
    * Removes a variant from the modpack.
    *
@@ -252,7 +252,11 @@ export const Modpack = (options: ModpackConfig): Modpack => {
 
   const variants: ModpackVariant[] = [];
 
-  const getVariant = (slug: string): ModpackVariant | null => {
+  const getVariant = (slug: string | null): ModpackVariant | null => {
+    if (slug === null) {
+      return null;
+    }
+
     if (manifest.variants.includes(slug)) {
       return variants.find(
         (variant) => variant.manifest.slug === slug,

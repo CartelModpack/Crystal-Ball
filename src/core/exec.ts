@@ -1,4 +1,4 @@
-import { mkdir } from "node:fs/promises";
+import { mkdir, rmdir } from "node:fs/promises";
 import { join } from "node:path";
 import { arg, execAll } from "../lib/exec";
 import type { Modpack } from "./pack";
@@ -30,6 +30,29 @@ const generatePackwizCommand: (command: string, path: string) => string = (
   path,
 ) => {
   return `${path} ${command}`;
+};
+
+const getPackwizCompatableType = (type: string | null): string | null => {
+  switch (type) {
+    case "mod": {
+      return "mods";
+    }
+    case "resourcepack": {
+      return "resourcepacks";
+    }
+    case "shader": {
+      return "shaderpacks";
+    }
+    case "config": {
+      return "config";
+    }
+    case null: {
+      return null;
+    }
+    default: {
+      throw new Error(`Type "${type}" is not compatible with Crystal Ball.`);
+    }
+  }
 };
 
 /** Helper function to compile a pack from a variant manifest. */
@@ -64,12 +87,12 @@ const compilePackFromManifest: (
 
             if (resource.source === "url") {
               cmd = generatePackwizCommand(
-                `${resource.source} add ${arg(resource.name)} ${arg(resource.url)} --meta-folder ${arg(resource.type)}`,
+                `${resource.source} add ${arg(resource.name)} ${arg(resource.url)} --meta-folder ${arg(getPackwizCompatableType(resource.type))}`,
                 packwizPath,
               );
             } else {
               cmd = generatePackwizCommand(
-                `${resource.source} add ${arg(resource.id)} --meta-folder ${arg(resource.type)}`,
+                `${resource.source} add ${arg(resource.id)} --meta-folder ${arg(getPackwizCompatableType(resource.type))}`,
                 packwizPath,
               );
             }
@@ -107,6 +130,30 @@ const compilePackFromManifest: (
   });
 };
 
+const packwizCompilePacksHelper = async (
+  modpack: Modpack,
+  variants: string[],
+  targets: string[],
+  config: PackwizExecConfig,
+): Promise<void> => {
+  await new Promise<void>((resolve, reject) => {
+    modpack.export((manifest, packVariants) => {
+      Promise.all(
+        packVariants
+          .map((vnt) => vnt.exportWithInherited(modpack, (vntMnf) => vntMnf))
+          .filter((vnt) => variants.includes(vnt.slug))
+          .map((vnt) =>
+            compilePackFromManifest(vnt, targets, manifest, config),
+          ),
+      )
+        .then(() => {
+          resolve();
+        })
+        .catch(reject);
+    });
+  });
+};
+
 /**
  * Compile packs variants from the file path.
  *
@@ -125,19 +172,16 @@ export const packwizCompilePacks: (
   const config = buildConfig(conf ?? {});
 
   await new Promise<void>((resolve, reject) => {
-    modpack.export((manifest, packVariants) => {
-      Promise.all(
-        packVariants
-          .map((vnt) => vnt.exportWithInherited(modpack, (vntMnf) => vntMnf))
-          .filter((vnt) => variants.includes(vnt.slug))
-          .map((vnt) =>
-            compilePackFromManifest(vnt, targets, manifest, config),
-          ),
-      )
-        .then(() => {
-          resolve();
-        })
-        .catch(reject);
-    });
+    rmdir(join(config.cwd, "./bin"))
+      .then(() => {
+        packwizCompilePacksHelper(modpack, variants, targets, config)
+          .then(resolve)
+          .catch(reject);
+      })
+      .catch(() => {
+        packwizCompilePacksHelper(modpack, variants, targets, config)
+          .then(resolve)
+          .catch(reject);
+      });
   });
 };
