@@ -5,8 +5,8 @@ import { consola } from "consola";
 import { Modpack } from "../../core";
 import { exec } from "../../lib/exec";
 import { fetchData } from "../../lib/fetch";
-import { installPackwiz } from "../../scripts/install_packwiz";
 import { exportModpackToFS, PACK_MANIFEST_FILE, PACK_VARIANT_DIR } from "../fs";
+import { installPackwiz, PACKWIZ_VERSION } from "../packwiz";
 import { prompt } from "../prompt";
 
 // init CLI
@@ -177,10 +177,7 @@ export const initCommand = new Command("init")
       );
 
       // This is the default version, will update manually.
-      packwiz = await installPackwiz({
-        tool: "0626c00149a8d9a5e9f76e5640e7b8b95c064350",
-        format: "1.1.0",
-      });
+      packwiz = await installPackwiz(PACKWIZ_VERSION);
     } else if (opts.packwiz) {
       packwiz = opts.packwiz;
     } else {
