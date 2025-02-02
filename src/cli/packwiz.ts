@@ -10,7 +10,7 @@ interface PackwizInstallConfig {
 
 /** The default packwiz version to use. */
 export const PACKWIZ_VERSION: PackwizInstallConfig = {
-  tool: "0626c00149a8d9a5e9f76e5640e7b8b95c064350",
+  tool: "241f24b550f6fe838913a56bdd58bac2fc53254a",
   format: "1.1.0",
 };
 
