@@ -101,13 +101,13 @@ const compilePackFromManifest: (
 
             if (resource.source === "url") {
               cmd = generatePackwizCommand(
-                `${resource.source} add ${arg(resource.name)} ${arg(resource.url)} --meta-folder ${arg(getPackwizCompatableType(resource.type))}`,
+                `${resource.source} add ${arg(resource.name)} ${arg(resource.url)} --meta-folder ${arg(getPackwizCompatableType(resource.type))} -y`,
                 packwizPath,
                 cwd,
               );
             } else {
               cmd = generatePackwizCommand(
-                `${resource.source} add ${arg(resource.id)} --meta-folder ${arg(getPackwizCompatableType(resource.type))}`,
+                `${resource.source} add ${arg(resource.id)} --meta-folder ${arg(getPackwizCompatableType(resource.type))} -y`,
                 packwizPath,
                 cwd,
               );
@@ -118,7 +118,7 @@ const compilePackFromManifest: (
 
           commands.push(
             ...postCommands,
-            generatePackwizCommand("refresh", packwizPath, cwd),
+            generatePackwizCommand("refresh -y", packwizPath, cwd),
           );
 
           const binDir = join(cwd, "./bin", target, variant.slug);
@@ -238,12 +238,12 @@ const packwizExportPacksHelper: (
             execAll(
               [
                 generatePackwizCommand(
-                  `modrinth export -o ${join(map[1], filenameModrinth)}`,
+                  `modrinth export -o ${join(map[1], filenameModrinth)} -y`,
                   config.packwizPath,
                   config.cwd,
                 ),
                 generatePackwizCommand(
-                  `curseforge export -o ${join(map[1], filenameCurseforge)}`,
+                  `curseforge export -o ${join(map[1], filenameCurseforge)} -y`,
                   config.packwizPath,
                   config.cwd,
                 ),
