@@ -65,7 +65,7 @@ export const addModrinthCommand = createBaseAddCommand("modrinth", "Modrinth")
                 type:
                   opts.type ??
                   (modrinthResource.project_type as PackResourceType),
-                name: name ?? modrinthResource.title,
+                name: name ?? modrinthResource.slug,
                 id: modrinthResource.id,
               });
 
