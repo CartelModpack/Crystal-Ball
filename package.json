@@ -8,10 +8,6 @@
   "license": "GPL-3.0",
   "private": true,
   "packageManager": "yarn@4.6.0",
-  "packwiz": {
-    "tool": "0626c00149a8d9a5e9f76e5640e7b8b95c064350",
-    "format": "1.1.0"
-  },
   "devDependencies": {
     "@types/node": "^22.10.5",
     "@types/semver": "^7.5.8",

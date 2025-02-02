@@ -175,6 +175,8 @@ export const initCommand = new Command("init")
       consola.info(
         "Packwiz not installed on system, installing locally now...",
       );
+
+      // This is the default version, will update manually.
       packwiz = await installPackwiz({
         tool: "0626c00149a8d9a5e9f76e5640e7b8b95c064350",
         format: "1.1.0",
