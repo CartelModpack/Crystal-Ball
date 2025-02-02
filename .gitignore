@@ -132,6 +132,7 @@ out
 /dist/
 /bin/
 /lib/
+/exports/
 
 # Test Files
 /test/
