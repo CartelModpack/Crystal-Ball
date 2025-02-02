@@ -7,7 +7,6 @@
   },
   "author": "gavinhsmith <me@gavinhsmith.com> (https://gavinhsmith.com)",
   "license": "GPL-3.0",
-  "private": false,
   "publishConfig": {
     "access": "public"
   },
@@ -32,7 +31,7 @@
     "typescript": "^5.7.3"
   },
   "scripts": {
-    "clean": "rimraf ./dist ./bin ./test ./pack.json ./packs",
+    "clean": "rimraf ./dist ./bin ./exports ./lib ./test ./pack.json ./packs",
     "lint": "eslint",
     "compile": "tsc",
     "build": "npm-run-all clean lint compile --print-label",

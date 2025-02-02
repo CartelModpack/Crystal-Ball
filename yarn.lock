@@ -1244,9 +1244,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"crystal-ball@workspace:.":
+"crystal-ball-pack@workspace:.":
   version: 0.0.0-use.local
-  resolution: "crystal-ball@workspace:."
+  resolution: "crystal-ball-pack@workspace:."
   dependencies:
     "@types/node": "npm:^22.10.5"
     "@types/semver": "npm:^7.5.8"
@@ -1261,7 +1261,7 @@ __metadata:
     rimraf: "npm:^6.0.1"
     typescript: "npm:^5.7.3"
   bin:
-    crystal-ball: ./bin/cli/index.js
+    crystal-ball: ./dist/cli/index.js
   languageName: unknown
   linkType: soft
 
