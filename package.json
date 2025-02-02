@@ -1,8 +1,10 @@
 {
   "name": "crystal-ball-pack",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "CLI Tool to manage modpacks using JSON files and packwiz.",
-  "bin": "./bin/cli/index.js",
+  "bin": {
+    "crystal-ball": "./dist/cli/index.js"
+  },
   "author": "gavinhsmith <me@gavinhsmith.com> (https://gavinhsmith.com)",
   "license": "GPL-3.0",
   "private": false,
