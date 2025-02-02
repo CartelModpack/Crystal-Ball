@@ -62,12 +62,8 @@ export const addURLCommand = createBaseAddCommand("url", "URL")
             .then(() => {
               consola.success("Added resource!");
             })
-            .catch((error) => {
-              consola.error(error);
-            });
+            .catch(consola.error);
         })
-        .catch((error: Error) => {
-          consola.error(error);
-        });
+        .catch(consola.error);
     },
   );

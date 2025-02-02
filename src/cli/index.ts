@@ -6,6 +6,7 @@ import { description, name, version } from "../../package.json";
 import { addCommand } from "./commands/add";
 import { compileCommand } from "./commands/compile";
 import { initCommand } from "./commands/init";
+import { removeCommand } from "./commands/remove";
 
 // Set name, desc, and vers from package.json
 program.name(name).description(description).version(version);
@@ -26,6 +27,9 @@ program.addCommand(compileCommand);
 
 // add CLI
 program.addCommand(addCommand);
+
+// remove CLI
+program.addCommand(removeCommand);
 
 // Pretty print errors
 

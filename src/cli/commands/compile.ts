@@ -47,7 +47,5 @@ export const compileCommand = new Command("compile")
           })
           .catch(consola.error);
       })
-      .catch((error: Error) => {
-        consola.error(error);
-      });
+      .catch(consola.error);
   });

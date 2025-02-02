@@ -86,8 +86,6 @@ export const addModrinthCommand = createBaseAddCommand("modrinth", "Modrinth")
               );
             });
         })
-        .catch((error: Error) => {
-          consola.error(error);
-        });
+        .catch(consola.error);
     },
   );

@@ -96,7 +96,7 @@ export const ModpackVariant = (
     resources: options.resources ?? [],
   };
 
-  let resourceNames: string[] = manifest.resources.map((val) => val.name);
+  const resourceNames: string[] = manifest.resources.map((val) => val.name);
 
   const addResource = (resource: PackResource): PackResource => {
     if (resourceNames.includes(resource.name)) {
@@ -116,8 +116,8 @@ export const ModpackVariant = (
 
     const index = resourceNames.indexOf(name);
 
-    manifest.resources = manifest.resources.splice(index, 1);
-    resourceNames = resourceNames.splice(index, 1);
+    manifest.resources.splice(index, 1);
+    resourceNames.splice(index, 1);
   };
 
   const getResource = (name: string): PackResource | null => {
