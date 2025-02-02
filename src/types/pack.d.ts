@@ -16,6 +16,8 @@ interface PackManifest {
   main: string | null;
   /** A list storing the slug of all variants. */
   variants: string[];
+  /** Path to the packwiz executable. */
+  packwiz: string;
 }
 
 /** The type of pack resource. */

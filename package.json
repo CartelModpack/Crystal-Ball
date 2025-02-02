@@ -30,8 +30,7 @@
     "build": "npm-run-all clean lint compile --print-label",
     "dev:compile": "tsc --watch",
     "dev": "npm-run-all clean lint --parallel dev:compile --print-label",
-    "cli": "node --trace-warnings ./dist/cli/index.js",
-    "script:packwiz": "node ./scripts/install_packwiz.js"
+    "cli": "node --trace-warnings ./dist/cli/index.js"
   },
   "dependencies": {
     "commander": "^13.1.0",

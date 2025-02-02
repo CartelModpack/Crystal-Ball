@@ -40,7 +40,7 @@ export const compileCommand = new Command("compile")
           variant ? [variant] : modpack.manifest.variants,
           target ? [target] : modpack.manifest.targets,
           modpack,
-          { cwd: process.cwd() },
+          { cwd: process.cwd(), packwizPath: modpack.manifest.packwiz },
         )
           .then(() => {
             consola.success("Packs compiled!");

@@ -248,6 +248,7 @@ export const Modpack = (options: ModpackConfig): Modpack => {
     targets: options.targets ?? [],
     main: options.main ?? null,
     variants: options.variants ?? [],
+    packwiz: options.packwiz,
   };
 
   const variants: ModpackVariant[] = [];

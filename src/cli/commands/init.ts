@@ -3,7 +3,9 @@ import { join } from "node:path";
 import { Command } from "commander";
 import { consola } from "consola";
 import { Modpack } from "../../core";
+import { exec } from "../../lib/exec";
 import { fetchData } from "../../lib/fetch";
+import { installPackwiz } from "../../scripts/install_packwiz";
 import { exportModpackToFS, PACK_MANIFEST_FILE, PACK_VARIANT_DIR } from "../fs";
 import { prompt } from "../prompt";
 
@@ -40,7 +42,9 @@ interface InitCLIConfig {
   author: string;
   slug?: string;
   targets?: string;
+  packwiz?: string;
   dryRun?: string;
+  forceInstallPackwiz?: string;
 }
 
 /** The `init [path] [flags]` command. */
@@ -73,6 +77,10 @@ export const initCommand = new Command("init")
   .option(
     "-s, --slug <string>",
     "The slug ID of the pack. If left blank will be derived from the name.",
+  )
+  .option(
+    "-p, --packwiz <string>",
+    "The path to the pathwiz executable to use. If left blank will use system installed version or locally installed version.",
   )
   .action(async (path: string | undefined, cliOpts: Partial<InitCLIConfig>) => {
     // Get the "cwd" of the new project.
@@ -161,6 +169,34 @@ export const initCommand = new Command("init")
 
     consola.start("Creating modpack files...");
 
+    let packwiz: string;
+
+    if (opts.forceInstallPackwiz) {
+      consola.info(
+        "Packwiz not installed on system, installing locally now...",
+      );
+      packwiz = await installPackwiz({
+        tool: "0626c00149a8d9a5e9f76e5640e7b8b95c064350",
+        format: "1.1.0",
+      });
+    } else if (opts.packwiz) {
+      packwiz = opts.packwiz;
+    } else {
+      try {
+        await exec("packwiz");
+        packwiz = "packwiz";
+      } catch (error) {
+        consola.debug(error);
+        consola.info(
+          "Packwiz not installed on system, installing locally now...",
+        );
+        packwiz = await installPackwiz({
+          tool: "0626c00149a8d9a5e9f76e5640e7b8b95c064350",
+          format: "1.1.0",
+        });
+      }
+    }
+
     // Build modpack.
     const pack = Modpack({
       name: opts.name,
@@ -173,6 +209,7 @@ export const initCommand = new Command("init")
       targets: opts.targets?.replaceAll(" ", "").split(",") ?? [
         latestFabricMcVers ?? "N/A",
       ],
+      packwiz,
     });
 
     // Create main pack variant.
@@ -199,4 +236,8 @@ export const initCommand = new Command("init")
 // Add any non-production commands.
 if (process.env.NODE_ENV !== "production") {
   initCommand.option("--dry-run", "[DEV] Prevent file exist checks");
+  initCommand.option(
+    "--force-install-packwiz",
+    "[DEV] Force init to install its own version of packwiz.",
+  );
 }

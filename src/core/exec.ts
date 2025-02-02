@@ -24,12 +24,25 @@ const buildConfig: (
   );
 };
 
-/** Helper function to generate a packwiz command. */
-const generatePackwizCommand: (command: string, path: string) => string = (
-  command,
+/** Helper function to get the path to the packwiz executable. */
+const generatePackwizPath: (path: string, cwd: string) => string = (
   path,
+  cwd,
 ) => {
-  return `${path} ${command}`;
+  if (path.startsWith(".")) {
+    return join(cwd, process.platform === "win32" ? `${path}.exe` : path);
+  }
+
+  return process.platform === "win32" ? `${path}.exe` : path;
+};
+
+/** Helper function to generate a packwiz command. */
+const generatePackwizCommand: (
+  command: string,
+  path: string,
+  cwd: string,
+) => string = (command, path, cwd) => {
+  return `${generatePackwizPath(path, cwd)} ${command}`;
 };
 
 const getPackwizCompatableType = (type: string | null): string | null => {
@@ -77,6 +90,7 @@ const compilePackFromManifest: (
             generatePackwizCommand(
               `init --author ${arg(packManifest.author)} --mc-version ${arg(target)} --fabric-latest --name ${arg(packManifest.main === variant.slug ? packManifest.name : displayName)} --version ${arg(packManifest.version)} -r --modloader fabric -y`,
               packwizPath,
+              cwd,
             ),
           ];
 
@@ -89,11 +103,13 @@ const compilePackFromManifest: (
               cmd = generatePackwizCommand(
                 `${resource.source} add ${arg(resource.name)} ${arg(resource.url)} --meta-folder ${arg(getPackwizCompatableType(resource.type))}`,
                 packwizPath,
+                cwd,
               );
             } else {
               cmd = generatePackwizCommand(
                 `${resource.source} add ${arg(resource.id)} --meta-folder ${arg(getPackwizCompatableType(resource.type))}`,
                 packwizPath,
+                cwd,
               );
             }
 
@@ -102,7 +118,7 @@ const compilePackFromManifest: (
 
           commands.push(
             ...postCommands,
-            generatePackwizCommand("refresh", packwizPath),
+            generatePackwizCommand("refresh", packwizPath, cwd),
           );
 
           const binDir = join(cwd, "./bin", target, variant.slug);
