@@ -3,10 +3,20 @@
   "version": "0.1.0",
   "description": "CLI Tool to manage modpacks using JSON files and packwiz.",
   "bin": "./bin/cli/index.js",
-  "repository": "https://github.com/gavinhsmith/Crystal-Ball",
   "author": "gavinhsmith <me@gavinhsmith.com> (https://gavinhsmith.com)",
   "license": "GPL-3.0",
-  "private": true,
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gavinhsmith/Crystal-Ball.git"
+  },
+  "bugs": {
+    "url": "https://github.com/gavinhsmith/Crystal-Ball/issues"
+  },
+  "homepage": "https://github.com/gavinhsmith/Crystal-Ball#readme",
   "packageManager": "yarn@4.6.0",
   "devDependencies": {
     "@types/node": "^22.10.5",
