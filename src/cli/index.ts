@@ -5,6 +5,7 @@ import { consola } from "consola";
 import { description, name, version } from "../../package.json";
 import { addCommand } from "./commands/add";
 import { compileCommand } from "./commands/compile";
+import { exportCommand } from "./commands/export";
 import { initCommand } from "./commands/init";
 import { removeCommand } from "./commands/remove";
 
@@ -30,6 +31,9 @@ program.addCommand(addCommand);
 
 // remove CLI
 program.addCommand(removeCommand);
+
+// export CLI
+program.addCommand(exportCommand);
 
 // Pretty print errors
 
