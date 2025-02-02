@@ -1,8 +1,7 @@
 import { mkdir } from "node:fs/promises";
 import { join } from "node:path";
 import { arg, execAll } from "../lib/exec";
-import { stackObjects } from "../lib/obj";
-import { getPackVarientFromSlug } from "./pack";
+import type { Modpack } from "./pack";
 
 /** Config for executing packwiz commands. */
 interface PackwizExecConfig {
@@ -16,7 +15,7 @@ interface PackwizExecConfig {
 const buildConfig: (
   ...overrides: Partial<PackwizExecConfig>[]
 ) => PackwizExecConfig = (...overrides) => {
-  return stackObjects<PackwizExecConfig>(
+  return Object.stack<PackwizExecConfig>(
     {
       packwizPath: "packwiz",
       cwd: process.cwd(),
@@ -38,10 +37,13 @@ const compilePackFromManifest: (
   variant: PackVariantManifest,
   targets: string[],
   packManifest: PackManifest,
-  config?: Partial<PackwizExecConfig>,
-) => Promise<void> = async (variant, targets, packManifest, conf) => {
-  const { packwizPath, cwd } = buildConfig(conf ?? {});
-
+  config: PackwizExecConfig,
+) => Promise<void> = async (
+  variant,
+  targets,
+  packManifest,
+  { packwizPath, cwd },
+) => {
   await new Promise<void>((resolve, reject) => {
     const displayName = `${packManifest.name} [${variant.name}]`;
 
@@ -110,27 +112,32 @@ const compilePackFromManifest: (
  *
  * @param variants - The list of variant slugs.
  * @param targets - The list of targets.
- * @param packManifest - The pack manifest.
+ * @param modpack - The pack manifest.
+ * @param conf - The config for the execution.
  * @returns A promise that resolves when all packs specifed are built.
  */
 export const packwizCompilePacks: (
   variants: string[],
   targets: string[],
-  packManifest: PackManifest,
-) => Promise<void> = async (variants, targets, packManifest) => {
+  modpack: Modpack,
+  config?: Partial<PackwizExecConfig>,
+) => Promise<void> = async (variants, targets, modpack, conf) => {
+  const config = buildConfig(conf ?? {});
+
   await new Promise<void>((resolve, reject) => {
-    Promise.all(variants.map((variant) => getPackVarientFromSlug(variant)))
-      .then((variantManifests) => {
-        Promise.all(
-          variantManifests.map((varManifest) =>
-            compilePackFromManifest(varManifest, targets, packManifest),
+    modpack.export((manifest, packVariants) => {
+      Promise.all(
+        packVariants
+          .map((vnt) => vnt.exportWithInherited(modpack, (vntMnf) => vntMnf))
+          .filter((vnt) => variants.includes(vnt.slug))
+          .map((vnt) =>
+            compilePackFromManifest(vnt, targets, manifest, config),
           ),
-        )
-          .then(() => {
-            resolve();
-          })
-          .catch(reject);
-      })
-      .catch(reject);
+      )
+        .then(() => {
+          resolve();
+        })
+        .catch(reject);
+    });
   });
 };

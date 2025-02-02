@@ -1,9 +1,10 @@
-import { existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { Command } from "commander";
 import { consola } from "consola";
+import { Modpack } from "../../core";
 import { fetchData } from "../../lib/fetch";
-import { PACK_MANIFEST_FILE_PATH, sanitizeForFiles } from "..";
+import { exportModpackToFS, PACK_MANIFEST_FILE, PACK_VARIANT_DIR } from "../fs";
 import { prompt } from "../prompt";
 
 // init CLI
@@ -16,7 +17,7 @@ const getLatestFabricMinecraftVers = async (): Promise<string> => {
       (val) => val.stable,
     )
       .then((stable) => {
-        consola.debug(stable);
+        // consola.debug(stable);
         if (stable[0]) {
           resolve(stable[0].version);
         } else {
@@ -80,11 +81,11 @@ export const initCommand = new Command("init")
 
     // Make the directory if it doesn't already exist.
     if (!cliOpts.dryRun) {
-      mkdirSync(join(cwd, "./packs"), { recursive: true });
+      mkdirSync(join(cwd, PACK_VARIANT_DIR), { recursive: true });
     }
 
     // Check a pack isn't already here.
-    if (existsSync(join(cwd, PACK_MANIFEST_FILE_PATH)) && !cliOpts.dryRun) {
+    if (existsSync(join(cwd, PACK_MANIFEST_FILE)) && !cliOpts.dryRun) {
       consola.error(new Error("Modpack manifest already exists here."));
 
       return;
@@ -160,48 +161,38 @@ export const initCommand = new Command("init")
 
     consola.start("Creating modpack files...");
 
-    // Build pack manifest.
-    const packManifest: Partial<PackManifest> = {};
-
-    packManifest.name = opts.name;
-    packManifest.slug = sanitizeForFiles(opts.slug ?? opts.name);
-    packManifest.description = opts.description;
-    packManifest.author = opts.author;
-    packManifest.version = opts.version;
-    packManifest.main = "main";
-    packManifest.variants = ["main"];
-    packManifest.targets = opts.targets?.replaceAll(" ", "").split(",") ?? [
-      latestFabricMcVers ?? "N/A",
-    ];
-
-    if (!cliOpts.dryRun) {
-      // Create pack.json
-      writeFileSync(
-        join(cwd, PACK_MANIFEST_FILE_PATH),
-        JSON.stringify(packManifest, null, 2),
-        "utf-8",
-      );
-    }
+    // Build modpack.
+    const pack = Modpack({
+      name: opts.name,
+      slug: opts.slug ?? opts.name,
+      description: opts.description,
+      author: opts.author,
+      version: opts.version,
+      main: null,
+      variants: [],
+      targets: opts.targets?.replaceAll(" ", "").split(",") ?? [
+        latestFabricMcVers ?? "N/A",
+      ],
+    });
 
     // Create main pack variant.
-    const mainPackVariant: PackVariantManifest = {
-      name: "Main",
-      slug: "main",
-      inherits: null,
-      resources: [],
-    };
+    pack.addVariant(
+      {
+        name: "Main",
+        slug: "main",
+        inherits: null,
+        resources: [],
+      },
+      true,
+    );
 
-    // Save main pack variant.
+    // Export
     if (!cliOpts.dryRun) {
-      writeFileSync(
-        join(cwd, "./packs/main.json"),
-        JSON.stringify(mainPackVariant, null, 2),
-        "utf-8",
-      );
+      await pack.export(exportModpackToFS(cwd));
     }
 
     consola.success(
-      `Modpack "${(packManifest as PackManifest).name}" created! Use crystal-ball help for utility commands.`,
+      `Modpack "${pack.manifest.name}" created! Use crystal-ball help for utility commands.`,
     );
   });
 

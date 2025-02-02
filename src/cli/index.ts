@@ -10,16 +10,6 @@ import { initCommand } from "./commands/init";
 // Set name, desc, and vers from package.json
 program.name(name).description(description).version(version);
 
-// Tools
-
-/** Sanitize a string for use in the filesystem. */
-export const sanitizeForFiles: (string: string) => string = (str) => {
-  return str
-    .trim()
-    .toLowerCase()
-    .replaceAll(/[ /\\?%*:|"<>\0]/g, "");
-};
-
 /** The pack manifest file path. */
 export const PACK_MANIFEST_FILE_PATH = "./pack.json";
 /** Get the pack variant manifest file path. */

@@ -1,7 +1,6 @@
+// Import overrides to initiate them.
+import "../lib/promise";
+import "../lib/obj";
+
 export { packwizCompilePacks } from "./exec";
-export {
-  getPackManifest,
-  getPackVarientManifest,
-  PACK_MANIFEST_FILE,
-  PACK_VARIANT_DIR,
-} from "./pack";
+export { Modpack, ModpackVariant } from "./pack";

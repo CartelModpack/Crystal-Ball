@@ -1,5 +1,4 @@
 import { consola } from "consola";
-import { stackObjects } from "../lib/obj";
 
 interface PromptConfig {
   default: (() => Promise<string>) | string | undefined;
@@ -82,7 +81,7 @@ export const prompt: (
 ) => Promise<unknown> = async (query, conf) => {
   return await new Promise((resolve, reject) => {
     processConfig(
-      stackObjects(
+      Object.stack(
         {
           default: undefined,
           postprocess: undefined,
