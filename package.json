@@ -1,6 +1,6 @@
 {
-  "name": "crystal-ball",
-  "version": "0.1.0",
+  "name": "crystal-ball-pack",
+  "version": "0.2.0",
   "description": "CLI Tool to manage modpacks using JSON files and packwiz.",
   "bin": "./bin/cli/index.js",
   "author": "gavinhsmith <me@gavinhsmith.com> (https://gavinhsmith.com)",

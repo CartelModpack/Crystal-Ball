@@ -128,11 +128,16 @@ out
 .yarn/install-state.gz
 .pnp.*
 
-# Build Files
-/dist/
+# Source/Editor Files
+/src/
 /bin/
 /lib/
 /exports/
+/.prettierignore
+/.prettierrc.json
+/eslint.config.ts
+/tsconfig.json
+/.vscode
 
 # Test Files
 /test/
