@@ -12,12 +12,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gavinhsmith/Crystal-Ball.git"
+    "url": "git+https://github.com/CartelModpack/Crystal-Ball.git"
   },
   "bugs": {
-    "url": "https://github.com/gavinhsmith/Crystal-Ball/issues"
+    "url": "https://github.com/CartelModpack/Crystal-Ball/issues"
   },
-  "homepage": "https://github.com/gavinhsmith/Crystal-Ball#readme",
+  "homepage": "https://github.com/CartelModpack/Crystal-Ball#readme",
   "packageManager": "yarn@4.6.0",
   "devDependencies": {
     "@types/node": "^22.10.5",
