@@ -127,7 +127,8 @@ const compilePackFromManifest: (
             .then(() => {
               execAll(commands, {
                 type: "in-order",
-                shouldRejectIfNotZero: true,
+                shouldRejectIfNotZero: false,
+                shouldShowErrors: true,
                 cwd: binDir,
               })
                 .then(() => {
