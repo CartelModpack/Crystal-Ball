@@ -201,3 +201,95 @@ export const packwizCompilePacks: (
       });
   });
 };
+
+/** Helper to export packs. */
+const packwizExportPacksHelper: (
+  modpack: Modpack,
+  targets: string[],
+  variants: string[],
+  config: PackwizExecConfig,
+) => Promise<void> = async (modpack, targets, variants, config) => {
+  await new Promise<void>((resolve, reject) => {
+    const matrix: [string, string][] = [];
+
+    targets.forEach((target) => {
+      variants.forEach((variant) => {
+        matrix.push([target, variant]);
+      });
+    });
+
+    Promise.all(
+      matrix
+        .map((mtx) => {
+          return [
+            join(config.cwd, `./bin/${mtx[0]}/${mtx[1]}`),
+            join(config.cwd, `./exports/${mtx[0]}/${mtx[1]}`),
+            mtx,
+          ] as [string, string, [string, string]];
+        })
+        .map((map) => {
+          const filename = `${modpack.manifest.slug}-${map[2][1]}`;
+
+          const filenameModrinth = `./${filename}.mrpack`;
+          const filenameCurseforge = `./${filename}.zip`;
+
+          return Promise.all([
+            mkdir(map[1], { recursive: true }),
+            execAll(
+              [
+                generatePackwizCommand(
+                  `modrinth export -o ${join(map[1], filenameModrinth)}`,
+                  config.packwizPath,
+                  config.cwd,
+                ),
+                generatePackwizCommand(
+                  `curseforge export -o ${join(map[1], filenameCurseforge)}`,
+                  config.packwizPath,
+                  config.cwd,
+                ),
+              ],
+              {
+                cwd: map[0],
+                type: "at-once",
+              },
+            ),
+          ]);
+        }),
+    )
+      .then(() => {
+        resolve();
+      })
+      .catch(reject);
+  });
+};
+
+/**
+ * Export compiled packwiz packs to /exports.
+ *
+ * @param modpack - The modpack instance to compile.
+ * @param targets - The targets to export.
+ * @param variants - The variants to export.
+ * @param conf - The config for exporting.
+ */
+export const packwizExportPacks: (
+  modpack: Modpack,
+  targets: string[],
+  variants: string[],
+  config?: Partial<PackwizExecConfig>,
+) => Promise<void> = async (modpack, targets, variants, conf) => {
+  const config = buildConfig(conf ?? {});
+
+  await new Promise<void>((resolve, reject) => {
+    rmdir(join(config.cwd, "./bin"))
+      .then(() => {
+        packwizExportPacksHelper(modpack, targets, variants, config)
+          .then(resolve)
+          .catch(reject);
+      })
+      .catch(() => {
+        packwizExportPacksHelper(modpack, targets, variants, config)
+          .then(resolve)
+          .catch(reject);
+      });
+  });
+};
